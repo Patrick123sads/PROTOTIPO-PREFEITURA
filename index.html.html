@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calçada Cidadã BH - Portal Cívico Gamificado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" xintegrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --pbh-blue-dark: #003B62;
+            --pbh-blue-light: #005691;
+            --pbh-yellow: #FFC917;
+            --pbh-green: #009A44;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Gray-100 */
+        }
+        .app-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Paleta de Cores PBH */
+        .header-bg { background-color: var(--pbh-blue-dark); }
+        .footer-bg { background-color: var(--pbh-blue-dark); }
+        .sidebar-bg { background-color: #1f2937; }
+        .highlight-yellow { color: var(--pbh-yellow); }
+        .button-primary-bg { background-color: var(--pbh-blue-light); }
+        .button-primary-bg:hover { background-color: var(--pbh-blue-dark); }
+        .accent-yellow-bg { background-color: var(--pbh-yellow); }
+        .accent-yellow-bg:hover { background-color: #fbbF06; }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s, border-left-color 0.2s;
+            border-left: 4px solid transparent;
+        }
+        .sidebar-item:hover { background-color: #374151; }
+        .sidebar-item.active {
+            background-color: var(--pbh-blue-light);
+            border-left-color: var(--pbh-yellow);
+            font-weight: 600;
+        }
+        
+        @keyframes fill-progress { from { width: 0%; } }
+        .progress-bar-fill { animation: fill-progress 1.5s ease-in-out forwards; }
+
+        .badge { opacity: 0.4; filter: grayscale(80%); transition: all 0.3s ease; }
+        .badge.unlocked { opacity: 1; filter: grayscale(0%); transform: scale(1.05); }
+        
+        .map-region { transition: all 0.3s ease-in-out; cursor: pointer; }
+        .map-region:hover { transform: translateY(-4px); filter: brightness(1.1); }
+        .map-region.unlocked { filter: grayscale(0%); opacity: 1; }
+        .map-region.locked { filter: grayscale(100%); opacity: 0.6; }
+
+        /* Estilos Linha do Tempo da Denúncia */
+        .timeline-item { display: flex; align-items: flex-start; }
+        .timeline-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background-color: #e5e7eb; margin-right: 12px; flex-shrink: 0; }
+        .timeline-item.completed .timeline-icon { background-color: #d1fae5; color: #065f46; }
+        .timeline-item.active .timeline-icon { background-color: #dbeafe; color: #1e40af; }
+        .timeline-content { padding-top: 5px; }
+
+        /* Animação de virar carta */
+        .perspective { perspective: 1000px; }
+        .card-flip { transition: transform 0.6s; transform-style: preserve-3d; position: relative; }
+        .card-flip.flipped { transform: rotateY(180deg); }
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .card-back { transform: rotateY(180deg); }
+        .heatmap-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+        .heatmap-cell { width: 100%; padding-bottom: 100%; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <div class="bg-red-600 text-white text-center p-2 font-bold text-sm z-50">
+        ESSE SÍTE É APENAS UM PROTÓTIPO ACADÊMICO, NÃO HÁ RELAÇÃO COM O SITE DA PREFEITURA OFICIAL
+    </div>
+
+    <header class="w-full bg-white shadow-md z-20">
+        <div class="header-bg text-white py-2 px-4 md:px-8 text-sm">
+             <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+                <div class="flex items-center space-x-3">
+                    <span class="font-semibold hidden lg:inline">ACESSIBILIDADE</span>
+                    <button class="text-xs hover:text-yellow-300">A+</button>
+                    <button class="text-xs hover:text-yellow-300">A-</button>
+                    <button class="text-xs hover:text-yellow-300">ALTO CONTRASTE</button>
+                </div>
+                <div class="relative w-full sm:w-64">
+                    <input type="text" id="search-input" onkeyup="performSearch()" placeholder="Buscar no portal..." class="w-full rounded-md py-1 px-3 text-gray-800 text-xs focus:ring-2 focus:ring-yellow-300 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto py-4 px-4 md:px-8 flex justify-between items-center">
+            <button onclick="toggleSidebar()" class="p-2 rounded-full hover:bg-gray-100 text-[var(--pbh-blue-light)] transition duration-150 mr-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></button>
+            <div class="flex items-center">
+                <img src="imagens/logo-pbh.png" alt="[Imagem do logo da Prefeitura de Belo Horizonte]" class="h-12 w-auto mr-3">
+                <div>
+                    <h1 class="text-xl md:text-2xl font-extrabold text-gray-900 leading-tight">CALÇADA CIDADÃ</h1>
+                    <p class="text-sm text-gray-500 font-semibold hidden sm:block">Portal Cívico de Belo Horizonte</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right hidden sm:block">
+                    <span id="firebase-status" class="text-sm font-semibold text-gray-700">Conectado</span>
+                    <p class="text-xs text-gray-500">ID Cidadão: <span id="user-id">...</span></p>
+                </div>
+                 <div class="hidden sm:flex items-center space-x-2 bg-yellow-50 p-2 rounded-full cursor-pointer hover:bg-yellow-100" onclick="changeScreen('conquistas')">
+                     <i class="fas fa-coins text-yellow-500 text-lg"></i>
+                     <span id="bh-coin-balance" class="font-bold text-[var(--pbh-blue-dark)]">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="custom-modal" class="hidden fixed inset-0 z-[100] bg-gray-900 bg-opacity-50 justify-center items-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 transform transition-all" id="modal-content">
+            <h3 id="modal-title" class="text-xl font-bold text-gray-800 mb-3">Título</h3>
+            <div id="modal-body" class="text-gray-600 mb-6">Mensagem</div>
+            <button onclick="hideModal()" class="w-full button-primary-bg text-white font-semibold py-2 rounded-lg transition duration-150">Entendi</button>
+        </div>
+    </div>
+    
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black opacity-0 z-40 hidden transition-opacity duration-300" onclick="toggleSidebar(true)"></div>
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-72 sidebar-bg text-white z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-5 border-b border-gray-700 flex items-center justify-between flex-shrink-0">
+            <h3 class="text-lg font-extrabold highlight-yellow">Menu Cívico</h3>
+            <button onclick="toggleSidebar(true)" class="text-gray-400 hover:text-white">&times;</button>
+        </div>
+        <nav class="flex-grow overflow-y-auto flex flex-col space-y-1 py-4">
+             <div id="nav-dashboard" onclick="changeScreen('dashboard')" class="sidebar-item"><i class="fas fa-tachometer-alt w-5 mr-3"></i> <span>Dashboard</span></div>
+            <div id="nav-conquistas" onclick="changeScreen('conquistas')" class="sidebar-item"><i class="fas fa-trophy w-5 mr-3"></i> <span>Meu Progresso</span></div>
+            <div id="nav-missoes" onclick="changeScreen('missoes')" class="sidebar-item"><i class="fas fa-bullseye w-5 mr-3"></i> <span>Missões e Desafios</span></div>
+            
+            <div class="px-6 py-2 mt-2 text-xs text-gray-400 font-semibold uppercase tracking-wider">Ações Cívicas</div>
+            <div id="nav-denuncia" onclick="changeScreen('denuncia')" class="sidebar-item"><i class="fas fa-pencil-alt w-5 mr-3"></i> <span>Nova Denúncia</span></div>
+            <div id="nav-status" onclick="changeScreen('status')" class="sidebar-item"><i class="fas fa-tasks w-5 mr-3"></i> <span>Acompanhamento</span></div>
+            <div id="nav-multiroes" onclick="changeScreen('multiroes')" class="sidebar-item"><i class="fas fa-users w-5 mr-3"></i> <span>Mutirões</span></div>
+            
+            <div class="px-6 py-2 mt-2 text-xs text-gray-400 font-semibold uppercase tracking-wider">Comunidade</div>
+            <div id="nav-clubes" onclick="changeScreen('clubes')" class="sidebar-item"><i class="fas fa-shield-alt w-5 mr-3"></i> <span>Clubes Cívicos</span></div>
+            <div id="nav-propor-acao" onclick="changeScreen('propor-acao')" class="sidebar-item"><i class="fas fa-lightbulb w-5 mr-3"></i> <span>Propostas da Comunidade</span></div>
+            <div id="nav-orcamento" onclick="changeScreen('orcamento')" class="sidebar-item"><i class="fas fa-vote-yea w-5 mr-3"></i> <span>Orçamento Participativo</span></div>
+            
+            <div class="px-6 py-2 mt-2 text-xs text-gray-400 font-semibold uppercase tracking-wider">Gamificação & Recompensas</div>
+            <div id="nav-temporadas" onclick="changeScreen('temporadas')" class="sidebar-item"><i class="fas fa-flag-checkered w-5 mr-3"></i> <span>Temporadas Temáticas</span></div>
+            <div id="nav-progresso" onclick="changeScreen('progresso')" class="sidebar-item"><i class="fas fa-map-marked-alt w-5 mr-3"></i> <span>Mapa da Cidade</span></div>
+            <div id="nav-ranking" onclick="changeScreen('ranking')" class="sidebar-item"><i class="fas fa-award w-5 mr-3"></i> <span>Rankings</span></div>
+            <div id="nav-recompensas" onclick="changeScreen('recompensas')" class="sidebar-item"><i class="fas fa-gem w-5 mr-3"></i> <span>Loja e Doações</span></div>
+            
+            <div class="px-6 py-2 mt-2 text-xs text-gray-400 font-semibold uppercase tracking-wider">Informações e Parcerias</div>
+            <div id="nav-governo" onclick="changeScreen('governo')" class="sidebar-item"><i class="fas fa-landmark w-5 mr-3"></i> <span>Estrutura de Governo</span></div>
+            <div id="nav-ouvidoria" onclick="changeScreen('ouvidoria')" class="sidebar-item"><i class="fas fa-phone-alt w-5 mr-3"></i> <span>Ouvidoria</span></div>
+            <div id="nav-legislacao" onclick="changeScreen('legislacao')" class="sidebar-item"><i class="fas fa-book w-5 mr-3"></i> <span>Legislação</span></div>
+            <div id="nav-empresas" onclick="changeScreen('empresas')" class="sidebar-item"><i class="fas fa-building w-5 mr-3"></i> <span>Empresas Parceiras</span></div>
+            <div id="nav-dashboard-publico" onclick="changeScreen('dashboard-publico')" class="sidebar-item"><i class="fas fa-chart-pie w-5 mr-3"></i> <span>Painel de Transparência</span></div>
+            <div id="nav-adocao" onclick="changeScreen('adocao')" class="sidebar-item"><i class="fas fa-hand-holding-heart w-5 mr-3"></i> <span>Adote uma Calçada</span></div>
+            <div id="nav-educacao" onclick="changeScreen('educacao')" class="sidebar-item"><i class="fas fa-graduation-cap w-5 mr-3"></i> <span>Educação Cívica</span></div>
+        </nav>
+    </div>
+
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow w-full">
+        <div id="content-container" class="min-h-[60vh]"></div>
+    </main>
+
+    <div class="fixed bottom-5 right-5 cursor-pointer transform hover:scale-110 transition-transform duration-200" onclick="showBelobotTip()">
+        <div class="absolute -top-8 -right-8 bg-[var(--pbh-blue-light)] text-white text-xs font-bold px-3 py-1 rounded-full animate-bounce">
+            Dica!
+        </div>
+        <img src="https://placehold.co/80x80/e0e7ff/003B62?text=🤖" class="rounded-full shadow-lg border-4 border-white" alt="[Imagem do mascote BelôBot]">
+    </div>
+    
+    <footer class="footer-bg text-white pt-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <div class="flex flex-col sm:flex-row justify-between items-center space-y-6 sm:space-y-0">
+                <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
+                     <div class="flex items-center mb-2">
+                        <img src="imagens/logo-pbh.png" alt="[Imagem do logo da Prefeitura de Belo Horizonte]" class="h-12 w-auto mr-3">
+                        <div class="leading-none"><p class="text-xl font-extrabold">BELO HORIZONTE</p><p class="text-sm font-semibold">PREFEITURA</p></div>
+                    </div>
+                    <p class="text-sm opacity-80">Av. Afonso Pena, 1212 - Centro | 30240-003</p>
+                </div>
+                <div class="flex flex-col items-center sm:items-end space-y-4">
+                    <div class="flex space-x-3 text-2xl">
+                        <a href="#" class="hover:text-yellow-300 transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="hover:text-yellow-300 transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="hover:text-yellow-300 transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                    <button class="bg-white text-[var(--pbh-blue-dark)] font-bold py-3 px-6 rounded-lg text-sm shadow-lg hover:bg-gray-100 transition duration-150" onclick="showModal('Fale com a PBH', 'Simulação de abertura do canal oficial de comunicação.')">
+                        <i class="fas fa-comment-dots mr-2"></i> FALE COM A PBH
+                    </button>
+                </div>
+            </div>
+             <div class="bg-red-600 text-white text-center p-2 font-bold text-sm mt-8">
+                ESSE SÍTE É APENAS UM PROTÓTIPO ACADÊMICO, NÃO HÁ RELAÇÃO COM O SITE DA PREFEITURA OFICIAL
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // --- DADOS DE GAMIFICAÇÃO (Simulados e Expandidos) ---
+        const userProfile = {
+            points: 155, bhCoin: 210, denunciasValidas: 8, multiroes: 1, cursos: 1, denunciaStreak: 2,
+            unlockedRegions: ['Centro-Sul', 'Leste'], levelIndex: 2, 
+            badges: ['primeira-denuncia', 'cinco-denuncias', 'primeiro-multirao', 'cidadao-consciente']
+        };
+
+        const levelTitles = [
+            { title: "Cidadão Iniciante", icon: "fa-seedling" }, { title: "Fiscal Cívico", icon: "fa-search-location" }, { title: "Guardião da Vizinhança", icon: "fa-shield-alt" },
+            { title: "Embaixador Urbano", icon: "fa-user-tie" }, { title: "Líder Comunitário", icon: "fa-crown" },
+        ];
+        const badgesData = {
+            'primeira-denuncia': { title: "Cidadão Iniciante", desc: "Registrou sua primeira denúncia válida.", icon: "fa-seedling" },'cinco-denuncias': { title: "Fiscal do Bairro", desc: "Registrou 5 denúncias válidas.", icon: "fa-search-location" }, 'dez-denuncias': { title: "Guardião da Vizinhança", desc: "Registrou 10 denúncias válidas e com alto índice de aprovação.", icon: "fa-shield-alt"},'primeiro-multirao': { title: "Mão na Massa", desc: "Participou do seu primeiro multirão.", icon: "fa-hands-helping" }, 'cidadao-consciente': { title: "Cidadão Consciente", desc: "Concluiu um minicurso de educação cívica.", icon: "fa-graduation-cap"}, 'combo-especial': { title: "Combo Cívico", desc: "Participou de um mutirão e validou uma denúncia no mesmo mês.", icon: "fa-star"},
+        };
+         const bhRegions = [
+            { id: 'Centro-Sul', name: 'Centro-Sul', required: 0, color: 'bg-sky-500', monumento: { id: 'praca-liberdade', name: "Praça da Liberdade", mission: "Resolva 3 problemas no entorno da Praça da Liberdade para revitalizar o coreto.", icon: "fa-landmark", completed: false } },
+            { id: 'Leste', name: 'Leste', required: 50, color: 'bg-rose-500', monumento: { id: 'praca-floriano', name: "Praça Floriano Peixoto", mission: "Participe de um mutirão de limpeza na praça.", icon: "fa-users", completed: true } },
+            { id: 'Pampulha', name: 'Pampulha', required: 150, color: 'bg-cyan-500', monumento: { id: 'igrejinha', name: "Igreja da Pampulha", mission: "Reporte problemas de pichação ou iluminação no entorno do complexo.", icon: "fa-church", completed: false } },
+            { id: 'Nordeste', name: 'Nordeste', required: 50, color: 'bg-amber-500' }, { id: 'Norte', name: 'Norte', required: 100, color: 'bg-emerald-500' }, { id: 'Oeste', name: 'Oeste', required: 100, color: 'bg-violet-500' }, { id: 'Noroeste', name: 'Noroeste', required: 150, color: 'bg-red-500' }, { id: 'Venda Nova', name: 'Venda Nova', required: 200, color: 'bg-pink-500' }, { id: 'Barreiro', name: 'Barreiro', required: 200, color: 'bg-orange-500' }
+        ];
+        const missions = {
+            daily: [
+                { id: 1, text: "Valide 2 denúncias hoje no modo Detetive", reward: 10, completed: false, icon: 'fa-search' },
+                { id: 2, text: "Sorteie uma Carta de Desafio", reward: 5, completed: true, icon: 'fa-random' }
+            ],
+            weekly: [
+                 { id: 3, text: "Participe de um mutirão nesta semana", reward: 50, completed: false, icon: 'fa-users' },
+                 { id: 4, text: "Complete 3 missões diárias", reward: 25, completed: false, icon: 'fa-calendar-check' }
+            ]
+        };
+        const leilaoItem = { title: "Visita Guiada à Sede da PBH", desc: "Uma experiência cívica única: conheça os bastidores da prefeitura e converse com um gestor público.", endDate: "31/10/2025", highestBid: 1250, highestBidder: "Cidadão-a4e8" };
+        const orcamentoItens = [
+            { id: 1, title: "Reforma da Praça da Savassi", icon: "fa-tree", currentVotes: 4500 }, { id: 2, title: "Mais iluminação na Av. Contorno", icon: "fa-lightbulb", currentVotes: 3200 },
+            { id: 3, title: "Novas ciclovias na Região Leste", icon: "fa-bicycle", currentVotes: 2800 },
+        ];
+        const empresasParceiras = [
+            { name: "Construtora ABC", adocoes: 15, impacto: "250m de calçadas", rank: 1, logo: 'building' }, { name: "Café Cultura", adocoes: 8, impacto: "4 praças revitalizadas", rank: 2, logo: 'coffee' },
+            { name: "Rede de Supermercados BH", adocoes: 5, impacto: "120 lixeiras novas", rank: 3, logo: 'shopping-cart' }
+        ];
+         const seasons = [
+            { id: 'chuva-segura', title: "Operação Chuva Segura", desc: "Denúncias de bueiros entupidos valem XP e pontos em dobro!", icon: 'fa-cloud-showers-heavy', active: true, color: 'blue' },
+            { id: 'calcada-acessivel', title: "Semana da Calçada Acessível", desc: "Reporte problemas de acessibilidade e ganhe a medalha 'Amigo da Acessibilidade'.", icon: 'fa-wheelchair', active: false, color: 'purple' },
+        ];
+        const heroisDoMes = [
+            { nome: "Cidadã Ana-3a4f", conquista: "15 denúncias resolvidas", avatar: "https://placehold.co/80x80/fecaca/991b1b?text=A" },
+            { nome: "Cidadão Beto-b8e1", conquista: "Organizou 2 mutirões", avatar: "https://placehold.co/80x80/dbeafe/1e40af?text=B" },
+            { nome: "Cidadã Carla-c9f2", conquista: "+500 BH-Coins em missões", avatar: "https://placehold.co/80x80/fef9c3/854d0e?text=C" }
+        ];
+        const enqueteData = {
+            question: "Qual a maior prioridade para a Praça Sete esta semana?",
+            options: [ { text: "Mais lixeiras", votes: 45 }, { text: "Melhorar iluminação", votes: 32 }, { text: "Conservar jardins", votes: 23 } ]
+        };
+        const missoesExploracao = [
+            { id: 'exp1', title: "Caça ao Tesouro Histórico", desc: "Encontre a placa de rua mais antiga do bairro Floresta. Envie uma foto e ganhe o emblema 'Historiador do Bairro'.", icon: 'fa-search-location', reward: 30, completed: false },
+            { id: 'exp2', title: "Guardião da Natureza", desc: "Localize e fotografe uma 'calçada verde' (com jardim de chuva) na Savassi.", icon: 'fa-leaf', reward: 25, completed: true },
+            { id: 'exp3', title: "Crítico de Arte Urbana", desc: "Encontre o mural de arte do artista X na Rua Sapucaí.", icon: 'fa-palette', reward: 20, completed: false }
+        ];
+        const quizCidadao = [
+            { question: "De quem é a responsabilidade pela manutenção da calçada?", options: ["Prefeitura", "Dono do imóvel", "Inquilino"], answer: 1 },
+            { question: "Qual o telefone para emergências da Guarda Municipal?", options: ["190", "153", "156"], answer: 1 }
+        ];
+        const doacoesData = [
+            { id: 'arvore', title: "Plante uma Árvore", desc: "Sua doação ajuda a plantar uma muda em áreas públicas da cidade.", cost: 100, icon: 'fa-tree' },
+            { id: 'racao', title: "Alimente um Pet", desc: "Ajude a comprar 1kg de ração para ONGs de animais parceiras da PBH.", cost: 50, icon: 'fa-paw' },
+            { id: 'livro', title: "Doe um Livro", desc: "Contribua com a compra de um livro novo para as bibliotecas públicas de BH.", cost: 75, icon: 'fa-book-open' }
+        ];
+        const seasonPassData = {
+            title: "Passe da Operação Chuva Segura", xp: 75,
+            levels: [
+                { level: 1, reward: "10 BH-Coins", icon: 'fa-coins', achieved: true }, { level: 2, reward: "Avatar: Botas de Chuva", icon: 'fa-user-secret', achieved: true }, { level: 3, reward: "25 BH-Coins", icon: 'fa-coins', achieved: true },
+                { level: 4, reward: "Emblema 'Guardião das Águas'", icon: 'fa-shield-alt', achieved: false }, { level: 5, reward: "50 BH-Coins", icon: 'fa-coins', achieved: false }
+            ]
+        };
+        
+        let denuncias = [
+            { id: 'abc1', endereco: 'Rua dos Aimorés, 123', descricao: 'Calçada com buraco perigoso.', dataCriacao: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), 
+              timeline: [
+                { status: 'Denúncia Recebida', completed: true }, { status: 'Em análise pela comunidade', completed: true }, { status: 'Validada e enviada à PBH', completed: true }, 
+                { status: 'Equipe de manutenção agendada', completed: true }, { status: 'Concluída', completed: true }
+              ],
+              comunicados: [{ de: "PBH", msg: "Serviço concluído pela equipe regional no dia de ontem." }]
+            },
+            { id: 'ghi3', endereco: 'Praça da Liberdade', descricao: 'Lixeira vandalizada.', dataCriacao: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), 
+              timeline: [
+                { status: 'Denúncia Recebida', completed: true }, { status: 'Em análise pela comunidade', completed: true }, { status: 'Validada e enviada à PBH', completed: true },
+                { status: 'Equipe de manutenção agendada', completed: false }, { status: 'Concluída', completed: false }
+              ],
+              comunicados: [{ de: "PBH", msg: "Recebemos sua denúncia. Uma equipe será designada em até 48h." }]
+            }
+        ];
+        let currentPropostas = [
+            { id: 1, title: "Limpeza da Praça Floriano Peixoto", bairro: "Santa Efigênia", apoios: 127, userApoiou: false, icon: 'fa-broom' },
+            { id: 2, title: "Plantio de mudas na Av. Brasil", bairro: "Funcionários", apoios: 88, userApoiou: true, icon: 'fa-tree' }
+        ];
+        const civicClubs = [
+            { id: 'savassi', name: "Time da Savassi", members: 45, points: 1250, rank: 1, icon: 'fa-glass-cheers', meta: "Resolver 20 problemas na Savassi", mural: [{ autor: "Ana-3a4f", msg: "Pessoal, mutirão na Getúlio Vargas no sábado!" }], rankingInterno: [{ nome: 'Ana-3a4f', pontos: 250 }, { nome: 'Leo-f4g5', pontos: 210 }] },
+            { id: 'centro', name: "Guardiões do Centro", members: 32, points: 1120, rank: 2, icon: 'fa-building', meta: "Mapear 10 pontos de acessibilidade", mural: [{ autor: "Beto-b8e1", msg: "Atenção aos postes apagados na Rua da Bahia." }], rankingInterno: [{ nome: 'Beto-b8e1', pontos: 180 }, { nome: 'Rita-h6i7', pontos: 150 }] },
+            { id: 'pampulha', name: "Amigos da Pampulha", members: 28, points: 980, rank: 3, icon: 'fa-water', meta: "Adotar 2 canteiros perto da orla", mural: [{ autor: "Carla-c9f2", msg: "Vamos focar em lixeiras essa semana?" }], rankingInterno: [{ nome: 'Carla-c9f2', pontos: 220 }, { nome: 'Duda-j8k9', pontos: 190 }] }
+        ];
+
+        // --- DADOS PARA A NOVA SEÇÃO DE NOTÍCIAS ---
+        const noticias = [
+            { 
+                imagem: "imagens/noticia-escola.jpg",
+                categoria: "SERVIÇOS",
+                titulo: "Cadastro Escolar 2026 está aberto",
+                descricao: "Garanta a vaga do seu filho na rede municipal de ensino. O prazo vai até 31 de Outubro.",
+                link: "#"
+            },
+            { 
+                imagem: "imagens/noticia-adocao.jpg",
+                categoria: "COMUNIDADE",
+                titulo: "AdotaBH: Encontre seu novo amigo",
+                descricao: "Conheça os animais disponíveis para adoção responsável e agende uma visita ao centro de zoonoses.",
+                link: "#"
+            },
+            { 
+                imagem: "imagens/noticia-vacina.jpg",
+                categoria: "SAÚDE",
+                titulo: "Campanha de Multivacinação",
+                descricao: "É hora de colocar as vacinas do seu filho em dia. Procure o posto de saúde mais próximo.",
+                link: "#"
+            },
+            { 
+                imagem: "imagens/noticia-emprego.jpg",
+                categoria: "EMPREGO",
+                titulo: "Mais Oportunidades!",
+                descricao: "Confira as vagas de emprego e cursos de qualificação disponíveis nos postos do SINE em BH.",
+                link: "#"
+            },
+            { 
+                imagem: "imagens/noticia-cultura.jpg",
+                categoria: "CULTURA",
+                titulo: "Vem aí o Festival Literário de BH",
+                descricao: "Prepare-se para a maior festa da leitura na cidade, com autores convidados e programação gratuita.",
+                link: "#"
+            },
+            { 
+                imagem: "imagens/noticia-chuva.jpg",
+                categoria: "ALERTA",
+                titulo: "Alerta de Chuvas Fortes",
+                descricao: "Defesa Civil emite alerta para possibilidade de chuvas intensas nas próximas 48 horas.",
+                link: "#"
+            }
+        ];
+
+        // --- Variáveis Globais ---
+        let currentQuizQuestion = 0;
+        let quizScore = 0;
+        
+        // --- INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
+        document.addEventListener('DOMContentLoaded', () => { 
+            window.userId = crypto.randomUUID();
+            updateUI();
+            changeScreen('dashboard');
+        });
+
+        // --- FUNÇÕES DE NAVEGAÇÃO E UI ---
+        window.changeScreen = function(screenName, params = {}, hideSidebar = true) {
+            window.currentScreen = screenName;
+            if (hideSidebar) toggleSidebar(true);
+            const contentContainer = document.getElementById('content-container');
+            contentContainer.innerHTML = getScreenContent(screenName, params);
+            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(`nav-${screenName.split('-')[0]}`)?.classList.add('active');
+            
+            if (screenName === 'status') renderDenuncias();
+            if (screenName === 'dashboard') renderEnquete();
+        };
+
+        function getScreenContent(screenName, params) {
+            const screens = {
+                'dashboard': getDashboardContent, 'conquistas': getConquistasContent, 'missoes': getMissoesContent, 'denuncia': getFormContent, 'status': getStatusContent,
+                'multiroes': getMultiroesContent, 'clubes': getClubesContent, 'clube-detalhe': getClubeDetalheContent, 'propor-acao': getProporAcaoContent, 'orcamento': getOrcamentoContent,
+                'temporadas': getTemporadasContent, 'season-pass': getSeasonPassContent, 'progresso': getProgressoContent, 'ranking': getRankingContent, 'recompensas': getRecompensasContent,
+                'adocao': getAdocaoContent, 'empresas': getEmpresasContent, 'dashboard-publico': getDashboardPublicoContent,
+                'educacao': getEducacaoContent, 'quiz': getQuizContent, 'legislacao': getLegislacaoContent, 'ouvidoria': getOuvidoriaContent,
+                'governo': getGovernoContent
+            };
+            return (screens[screenName] || (() => `<h2>Página não encontrada: ${screenName}</h2>`))(params);
+        }
+
+        // --- FUNÇÕES DE CONTEÚDO ---
+
+        window.performSearch = function() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const contentContainer = document.getElementById('content-container');
+            const items = contentContainer.querySelectorAll('[data-filterable-item="true"]');
+
+            if (items.length === 0 && query) {
+                // Indicate search is not applicable on this page
+                const searchInput = document.getElementById('search-input');
+                searchInput.classList.add('ring-2', 'ring-red-500');
+                setTimeout(() => {
+                    searchInput.classList.remove('ring-2', 'ring-red-500');
+                }, 1500);
+                return;
+            }
+
+            items.forEach(item => {
+                const itemText = item.textContent.toLowerCase();
+                if (itemText.includes(query)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function getDashboardContent() {
+             const progress = Math.min((userProfile.denunciasValidas / 10) * 100, 100); 
+             // Gera o HTML para os cards de notícias
+             const noticiasHtml = noticias.map(n => `
+                <div data-filterable-item="true" class="bg-white rounded-xl app-shadow overflow-hidden flex flex-col transition-transform duration-300 hover:-translate-y-1">
+                    <img src="${n.imagem}" alt="[Imagem sobre ${n.titulo}]" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Imagem+Indisponível';">
+                    <div class="p-4 flex flex-col flex-grow">
+                        <span class="text-xs font-bold uppercase text-[var(--pbh-blue-light)] mb-1">${n.categoria}</span>
+                        <h4 class="font-bold text-lg text-gray-900">${n.titulo}</h4>
+                        <p class="text-gray-600 text-sm mt-2 flex-grow">${n.descricao}</p>
+                        <a href="${n.link}" class="mt-4 self-start button-primary-bg text-white font-semibold py-2 px-4 rounded-lg text-center text-sm transition">Saiba mais</a>
+                    </div>
+                </div>
+             `).join('');
+
+             return `<div class="space-y-8">
+                     <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                         <div class="flex items-center justify-between mb-4"><h2 class="text-2xl font-extrabold text-gray-800">Calçadômetro de BH</h2><i class="fas fa-shoe-prints text-3xl text-[var(--pbh-blue-light)]"></i></div>
+                        <p class="text-gray-600 mb-4">Este é um indicador do progresso coletivo na regularização das calçadas, baseado na sua participação.</p>
+                        <div class="bg-gray-200 rounded-full h-8 w-full overflow-hidden"><div class="progress-bar-fill bg-gradient-to-r from-[var(--pbh-green)] to-[var(--pbh-blue-light)] h-full flex items-center justify-center text-white font-bold" style="width: ${progress}%">${Math.round(progress)}%</div></div>
+                        <p class="text-center text-sm mt-2 text-gray-500">Sua contribuição para a meta regional.</p>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white rounded-xl app-shadow p-6 flex flex-col">
+                            <h3 class="font-bold text-gray-800 mb-4 text-xl flex items-center"><i class="fas fa-crown text-yellow-500 mr-3"></i>Heróis do Mês</h3>
+                            <div class="flex flex-col sm:flex-row justify-around items-center gap-4 flex-grow">
+                                ${heroisDoMes.map(h => `<div class="text-center"><img src="${h.avatar}" class="rounded-full w-20 h-20 mx-auto mb-2 border-2 border-yellow-400"><p class="font-semibold text-sm">${h.nome}</p><p class="text-xs text-gray-500">${h.conquista}</p></div>`).join('')}
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl app-shadow p-6">
+                             <h3 class="font-bold text-gray-800 mb-4 text-xl flex items-center"><i class="fas fa-poll text-green-500 mr-3"></i>Enquete Rápida</h3>
+                             <div id="enquete-container"></div>
+                        </div>
+                    </div>
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <h3 class="md:col-span-3 font-bold text-gray-800 text-2xl">Desafios Rápidos</h3>
+                         <div class="perspective h-48">
+                             <div id="card-desafio-1" class="w-full h-full card-flip cursor-pointer" onclick="this.classList.toggle('flipped')">
+                                 <div class="card-face bg-gradient-to-br from-blue-400 to-indigo-600 rounded-xl flex flex-col justify-center items-center text-white p-4 text-center">
+                                     <i class="fas fa-random text-4xl mb-2"></i><h4 class="font-bold text-lg">Desafio Diário</h4><p class="text-sm">Clique para revelar</p>
+                                 </div>
+                                 <div class="card-face card-back bg-white rounded-xl flex flex-col justify-center items-center text-center p-4 app-shadow">
+                                     <h5 class="font-bold text-indigo-800">Sua Missão:</h5><p class="text-gray-700">Valide 2 denúncias hoje no modo Detetive e ganhe +10 BH-Coins!</p>
+                                 </div>
+                             </div>
+                         </div>
+                          <div class="perspective h-48">
+                             <div id="card-desafio-2" class="w-full h-full card-flip cursor-pointer" onclick="this.classList.toggle('flipped')">
+                                 <div class="card-face bg-gradient-to-br from-green-400 to-teal-600 rounded-xl flex flex-col justify-center items-center text-white p-4 text-center">
+                                     <i class="fas fa-camera text-4xl mb-2"></i><h4 class="font-bold text-lg">Desafio Fotográfico</h4><p class="text-sm">Clique para revelar</p>
+                                 </div>
+                                 <div class="card-face card-back bg-white rounded-xl flex flex-col justify-center items-center text-center p-4 app-shadow">
+                                     <h5 class="font-bold text-teal-800">Sua Missão:</h5><p class="text-gray-700">Fotografe e denuncie uma lixeira quebrada na sua região para ganhar +15 BH-Coins!</p>
+                                 </div>
+                             </div>
+                         </div>
+                          <div class="perspective h-48">
+                             <div id="card-desafio-3" class="w-full h-full card-flip cursor-pointer" onclick="this.classList.toggle('flipped')">
+                                 <div class="card-face bg-gradient-to-br from-yellow-400 to-orange-600 rounded-xl flex flex-col justify-center items-center text-white p-4 text-center">
+                                     <i class="fas fa-map-marker-alt text-4xl mb-2"></i><h4 class="font-bold text-lg">Desafio de Bairro</h4><p class="text-sm">Clique para revelar</p>
+                                 </div>
+                                 <div class="card-face card-back bg-white rounded-xl flex flex-col justify-center items-center text-center p-4 app-shadow">
+                                     <h5 class="font-bold text-orange-800">Sua Missão:</h5><p class="text-gray-700">Visite a Praça da Savassi e confirme se a iluminação está funcionando. Ganhe +5 BH-Coins!</p>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="mt-12">
+                        <h2 class="text-3xl font-extrabold text-gray-800 mb-6">Notícias e Serviços</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${noticiasHtml}
+                        </div>
+                     </div>
+                </div>`;
+        }
+        
+        // --- NOVA PÁGINA: ESTRUTURA DE GOVERNO ---
+        function getGovernoContent() {
+            return `
+            <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    <div class="lg:col-span-3">
+                        <div id="prefeito">
+                            <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-6">Prefeito</h2>
+                            <img src="imagens/minha-foto.jpg" class="w-full max-w-lg mx-auto lg:mx-0 rounded-lg app-shadow mb-6" alt="[Imagem do Prefeito]">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">Patrick, o Cidadão Engajado</h3>
+                            <div class="prose max-w-none text-gray-700 space-y-4">
+                                <p>Residente de Belo Horizonte e um entusiasta das tecnologias cívicas, Patrick dedica seu tempo a explorar como a inovação pode fortalecer a conexão entre os cidadãos e a gestão pública. Com uma sólida formação em desenvolvimento e um olhar atento para as necessidades da comunidade, ele idealizou e prototipou esta plataforma como um exercício de cidadania ativa.</p>
+                                <p>Seu objetivo com o portal "Calçada Cidadã" é demonstrar o potencial da gamificação para incentivar a participação popular, transformando a responsabilidade cívica em uma jornada colaborativa e recompensadora. Ele acredita que, ao dar as ferramentas certas para a população, é possível construir uma cidade mais acessível, transparente e agradável para todos.</p>
+                                <p>Este projeto é um convite aberto à colaboração e um exemplo prático de como a paixão pela cidade pode se transformar em ações concretas. Quando não está programando, Patrick pode ser encontrado explorando as calçadas de BH, sempre em busca de novas ideias para melhorar o espaço urbano.</p>
+                            </div>
+                        </div>
+
+                        <hr class="my-12 border-t-2 border-gray-200">
+
+                        <div id="secretariado">
+                            <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-8">Vice-Prefeito e Secretariado</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-12">
+                                <div class="flex items-start gap-4" data-filterable-item="true">
+                                    <img src="imagens/gabriel-foto.jpg" class="rounded-lg w-32 h-32 flex-shrink-0 app-shadow" alt="[Imagem de Gabriel Bueno]">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-800">Gabriel Bueno</h3>
+                                        <p class="font-semibold text-[var(--pbh-blue-light)]">Vice-Prefeito</p>
+                                        <p class="mt-2 text-sm text-gray-700">Braço direito na gestão, Gabriel Bueno foca na articulação política e na implementação de projetos estratégicos para o desenvolvimento contínuo de Belo Horizonte.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4" data-filterable-item="true">
+                                    <img src="imagens/vic-foto.jpg" class="rounded-lg w-32 h-32 flex-shrink-0 app-shadow" alt="[Imagem de Victoria Camylle]">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-800">Victoria Camylle</h3>
+                                        <p class="font-semibold text-[var(--pbh-blue-light)]">Secretária de Infraestrutura Urbana</p>
+                                        <p class="mt-2 text-sm text-gray-700">Victoria lidera a frente de infraestrutura com foco em obras que melhoram a qualidade de vida, como saneamento, pavimentação e a manutenção do programa Calçada Cidadã.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4" data-filterable-item="true">
+                                    <img src="imagens/julia-foto.jpg" class="rounded-lg w-32 h-32 flex-shrink-0 app-shadow" alt="[Imagem de Julia Coelho]">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-800">Julia Coelho</h3>
+                                        <p class="font-semibold text-[var(--pbh-blue-light)]">Secretária de Transportes</p>
+                                        <p class="mt-2 text-sm text-gray-700">Responsável por otimizar o trânsito e melhorar a qualidade do transporte público, garantindo que o cidadão possa se deslocar com mais rapidez e segurança.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4" data-filterable-item="true">
+                                    <img src="imagens/isabel-foto.jpg" class="rounded-lg w-32 h-32 flex-shrink-0 app-shadow" alt="[Imagem de Isabel Rodrigues]">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-800">Isabel Rodrigues</h3>
+                                        <p class="font-semibold text-[var(--pbh-blue-light)]">Secretária de Turismo</p>
+                                        <p class="mt-2 text-sm text-gray-700">Focada em promover os atrativos culturais e gastronômicos de Belo Horizonte, buscando atrair novos visitantes e fortalecer a economia local através do turismo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="lg:col-span-1">
+                        <div class="bg-gray-50 rounded-lg p-4 sticky top-8">
+                            <h4 class="font-bold text-[var(--pbh-blue-dark)] border-b pb-2 mb-2">PBH</h4>
+                            <nav class="space-y-2 text-sm">
+                                <a href="#" class="block font-semibold text-green-600">> ESTRUTURA DE GOVERNO</a>
+                                <a href="#prefeito" class="block text-[var(--pbh-blue-light)] hover:underline pl-4">> PREFEITO</a>
+                                <a href="#secretariado" class="block text-[var(--pbh-blue-light)] hover:underline pl-4">> VICE-PREFEITO E SECRETARIADO</a>
+                                <a href="#" class="block text-[var(--pbh-blue-light)] hover:underline pl-4">> AGENDA DE AUTORIDADES</a>
+                                <a href="#" class="block text-[var(--pbh-blue-light)] hover:underline pl-4">> ORGANOGRAMA DA PREFEITURA</a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function getStatusContent() {
+            return `<div class="p-4 sm:p-0"><h2 class="text-3xl font-extrabold text-gray-800 mb-6 text-[var(--pbh-blue-dark)]">Acompanhamento de Denúncias</h2><div id="denuncias-list" class="space-y-6"></div></div>`;
+        }
+        
+        function getMultiroesContent() { 
+            return `<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                            <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)]">Próximos Mutirões</h2>
+                            <div data-filterable-item="true" class="space-y-4 mt-4">
+                                <div class="bg-gray-50 p-5 rounded-lg border-l-4 border-pink-500"><p class="font-bold text-gray-800">Bairro Funcionários</p><p class="text-sm text-gray-600">Rua da Bahia - 15/11/2025 - 8h às 12h</p><button class="mt-3 text-pink-600 hover:text-pink-800 font-semibold text-sm">Inscrever-se</button></div>
+                                <div class="bg-gray-50 p-5 rounded-lg border-l-4 border-pink-500"><p class="font-bold text-gray-800">Bairro Santa Efigênia</p><p class="text-sm text-gray-600">Rua Nísio Batista de Oliveira - 29/11/2025 - 9h às 13h</p><button class="mt-3 text-pink-600 hover:text-pink-800 font-semibold text-sm">Inscrever-se</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-1 space-y-6">
+                         <div class="bg-white rounded-xl app-shadow p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">Gerador de Convite</h3>
+                            <p class="text-sm text-gray-600 mb-4">Chame seus vizinhos para a ação!</p>
+                             <div class="space-y-3">
+                                <input id="convite-local" type="text" placeholder="Local (Ex: Praça da Savassi)" class="w-full border-gray-300 rounded-lg p-2 text-sm">
+                                <input id="convite-data" type="text" placeholder="Data e Hora (Ex: 25/12, 9h)" class="w-full border-gray-300 rounded-lg p-2 text-sm">
+                                <button onclick="gerarConvite()" class="w-full button-primary-bg text-white font-semibold py-2 rounded-lg transition">Gerar e Copiar Convite</button>
+                            </div>
+                        </div>
+                         <div class="bg-white rounded-xl app-shadow p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">Organize um Mutirão</h3>
+                             <p class="text-sm text-gray-600 mb-4">Proponha uma ação e solicite apoio da PBH.</p>
+                             <button class="w-full button-primary-bg text-white font-semibold py-2 rounded-lg transition">Solicitar Apoio</button>
+                        </div>
+                    </div>
+                </div>`; 
+        }
+
+        function getClubesContent() {
+            let rankingHtml = civicClubs.sort((a,b) => b.points - a.points).map(c => `
+                <div data-filterable-item="true" class="flex items-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold w-10 text-center text-[var(--pbh-blue-light)]">#${c.rank}</div>
+                    <div class="text-3xl mx-4 text-gray-400"><i class="fas ${c.icon}"></i></div>
+                    <div class="flex-grow"><p class="font-bold text-lg text-gray-800">${c.name}</p><p class="text-sm text-gray-500">${c.members} membros | ${c.points} pontos</p></div>
+                    <button onclick="changeScreen('clube-detalhe', { clubId: '${c.id}' })" class="button-primary-bg text-white font-semibold py-2 px-4 rounded-lg transition text-sm">Ver Clube</button>
+                </div>`).join('');
+            return `<div class="space-y-8">
+                        <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                            <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Clubes Cívicos</h2>
+                            <p class="text-gray-600 mb-6">Junte-se a grupos para competir com outros bairros!</p>
+                            <div class="space-y-4">${rankingHtml}</div>
+                        </div>
+                        <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                             <h2 class="text-3xl font-extrabold text-red-600 mb-4">Batalha de Clubes!</h2>
+                             <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                                <p class="font-bold text-red-800">Evento Atual: Batalha da Pampulha vs. Savassi</p>
+                                <p class="text-sm text-red-700 mt-1">Quem participa de mais mutirões em Outubro? O clube vencedor ganha um emblema exclusivo!</p>
+                             </div>
+                        </div>
+                    </div>`;
+        }
+        
+        function getClubeDetalheContent(params) {
+            const clube = civicClubs.find(c => c.id === params.clubId);
+            if (!clube) return `<h2>Clube não encontrado</h2>`;
+            
+            return `
+                <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                    <button onclick="changeScreen('clubes')" class="text-sm font-semibold text-[var(--pbh-blue-light)] mb-4"><i class="fas fa-arrow-left mr-2"></i>Voltar para todos os clubes</button>
+                    <div class="flex items-center mb-6">
+                        <i class="fas ${clube.icon} text-5xl text-gray-400 mr-4"></i>
+                        <div>
+                            <h2 class="text-4xl font-extrabold text-[var(--pbh-blue-dark)]">${clube.name}</h2>
+                            <p class="text-gray-600">${clube.members} membros | ${clube.points} pontos</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 space-y-4">
+                            <h3 class="text-xl font-bold">Mural de Avisos</h3>
+                            ${clube.mural.map(m => `<div class="bg-gray-50 p-3 rounded-lg"><p class="text-sm text-gray-700">${m.msg}</p><p class="text-xs text-right font-semibold text-gray-500 mt-1">- ${m.autor}</p></div>`).join('')}
+                        </div>
+                        <div class="space-y-6">
+                            <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+                                <h4 class="font-bold text-yellow-800">Meta do Mês</h4>
+                                <p class="text-sm text-yellow-700">${clube.meta}</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Ranking Interno</h4>
+                                <ul class="text-sm space-y-2 mt-2">
+                                ${clube.rankingInterno.map(r => `<li class="flex justify-between"><span>${r.nome}</span><span class="font-bold">${r.pontos} pts</span></li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getMissoesContent() {
+             return `<div class="space-y-8">
+                        <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                            <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Missões de Exploração Urbana</h2>
+                             <p class="text-gray-600 mb-6">Encontre e registre coisas boas na cidade!</p>
+                             <div class="space-y-4">${missoesExploracao.map(mission => `<div data-filterable-item="true" class="p-4 rounded-lg flex items-center ${mission.completed ? 'bg-green-50' : 'bg-gray-50'} border ${mission.completed ? 'border-green-200' : 'border-gray-200'}"><div class="w-12 h-12 rounded-full flex items-center justify-center ${mission.completed ? 'bg-green-100' : 'bg-yellow-100'} mr-4"><i class="fas ${mission.icon} text-2xl ${mission.completed ? 'text-green-600' : 'text-yellow-600'}"></i></div><div class="flex-grow"><h4 class="font-bold text-gray-800">${mission.title}</h4><p class="text-sm text-gray-600">${mission.desc}</p></div><div class="text-right ml-4">${mission.completed ? `<span class="text-green-600 font-bold flex items-center"><i class="fas fa-check-circle mr-2"></i>Concluída</span>` : `<span class="font-bold text-yellow-500">+${mission.reward} <i class="fas fa-coins"></i></span>`}</div></div>`).join('')}</div>
+                        </div>
+                        <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                             <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Suas Missões Ativas</h2>
+                             <div class="space-y-4">
+                                ${missions.daily.map(mission => `<div data-filterable-item="true" class="p-4 rounded-lg flex items-center ${mission.completed ? 'bg-green-50' : 'bg-gray-50'}"><div class="flex-grow"><p class="font-bold text-gray-800">${mission.text}</p></div><div class="text-right ml-4">${mission.completed ? `<span class="text-green-600 font-bold"><i class="fas fa-check-circle"></i></span>` : `<span class="font-bold text-yellow-500">+${mission.reward} <i class="fas fa-coins"></i></span>`}</div></div>`).join('')}
+                                ${missions.weekly.map(mission => `<div data-filterable-item="true" class="p-4 rounded-lg flex items-center ${mission.completed ? 'bg-green-50' : 'bg-gray-50'}"><div class="flex-grow"><p class="font-bold text-gray-800">${mission.text}</p></div><div class="text-right ml-4">${mission.completed ? `<span class="text-green-600 font-bold"><i class="fas fa-check-circle"></i></span>` : `<span class="font-bold text-yellow-500">+${mission.reward} <i class="fas fa-coins"></i></span>`}</div></div>`).join('')}
+                             </div>
+                        </div>
+                    </div>`;
+        }
+
+        function getProgressoContent() {
+            const regionsHtml = bhRegions.map(region => {
+                const unlocked = userProfile.unlockedRegions.includes(region.id);
+                let monumentoHtml = '';
+                if (unlocked && region.monumento) {
+                    const m = region.monumento;
+                    monumentoHtml = `<button onclick="showModal('Missão: ${m.name}', '${m.mission}')" class="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center ${m.completed ? 'bg-green-500' : 'bg-yellow-400'} text-white text-xs shadow-lg"><i class="fas ${m.icon}"></i></button>`;
+                }
+
+                return `<div class="relative map-region ${unlocked ? 'unlocked' : 'locked'} ${region.color} text-white p-4 rounded-lg flex flex-col justify-center items-center app-shadow">
+                            <p class="font-bold text-center">${region.name}</p>
+                            ${unlocked ? '<i class="fas fa-check-circle mt-1"></i>' : '<i class="fas fa-lock mt-1"></i>'}
+                            ${monumentoHtml}
+                         </div>`;
+            }).join('');
+            return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8"><h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-2">Mapa da Cidade</h2><p class="text-gray-600 mb-6">Desbloqueie regiões e complete missões de monumento para ganhar emblemas exclusivos.</p><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">${regionsHtml}</div></div>`;
+        }
+        
+        function getTemporadasContent() {
+            return `<div class="space-y-8">
+                <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)]">Temporadas Temáticas</h2>
+                ${seasons.map(season => {
+                    let seasonHtml = `<div class="rounded-xl app-shadow overflow-hidden ${season.active ? 'border-4 border-yellow-400' : 'opacity-70'}">
+                        <div class="p-6 bg-gradient-to-r ${season.active ? `from-blue-600 to-blue-800` : 'from-gray-600 to-gray-800'} text-white flex justify-between items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold">${season.title}</h3>
+                                ${season.active ? '<span class="text-xs font-bold bg-yellow-400 text-gray-900 px-2 py-1 rounded-full">TEMPORADA ATUAL</span>' : ''}
+                            </div>
+                            <i class="fas ${season.icon} text-5xl opacity-30"></i>
+                        </div>
+                        <div class="p-6 bg-white">
+                            <p class="text-gray-700 mb-4">${season.desc}</p>`;
+                    if (season.active) {
+                        seasonHtml += `<button onclick="changeScreen('season-pass')" class="button-primary-bg text-white font-bold py-2 px-4 rounded-lg transition">Ver Passe de Temporada</button>`;
+                    }
+                    seasonHtml += `</div></div>`;
+                    return seasonHtml;
+                }).join('')}
+            </div>`;
+        }
+
+        function getSeasonPassContent() {
+            const progressPercentage = (seasonPassData.xp / 100) * 100; // Simula XP para chegar ao level 5
+            return `
+                 <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                    <button onclick="changeScreen('temporadas')" class="text-sm font-semibold text-[var(--pbh-blue-light)] mb-4"><i class="fas fa-arrow-left mr-2"></i>Voltar para Temporadas</button>
+                    <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-2">${seasonPassData.title}</h2>
+                    <p class="text-gray-600 mb-2">Ganhe XP ao completar missões temáticas para desbloquear recompensas.</p>
+                    
+                    <div class="w-full bg-gray-200 rounded-full h-4 mb-6">
+                        <div class="bg-yellow-400 h-4 rounded-full" style="width: ${progressPercentage}%"></div>
+                    </div>
+
+                    <div class="space-y-4">
+                    ${seasonPassData.levels.map(l => `
+                        <div class="flex items-center p-4 rounded-lg ${l.achieved ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'} border">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center ${l.achieved ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-500'} mr-4">
+                               <i class="fas ${l.achieved ? 'fa-check' : l.icon} text-2xl"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <p class="text-xs font-bold text-gray-500">NÍVEL ${l.level}</p>
+                                <h4 class="font-bold text-gray-800">${l.reward}</h4>
+                            </div>
+                            ${l.achieved ? `<span class="font-bold text-green-600">Conquistado</span>` : `<span class="font-bold text-gray-500">Bloqueado</span>`}
+                        </div>
+                    `).join('')}
+                    </div>
+                 </div>
+            `;
+        }
+
+        function getRecompensasContent() {
+             return `<div class="space-y-8">
+                     <div class="bg-gradient-to-r from-purple-600 to-indigo-700 text-white rounded-xl app-shadow p-6 lg:p-8">
+                         <h2 class="text-3xl font-extrabold mb-2">Leilão Cívico do Mês!</h2>
+                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                            <div class="md:col-span-1 flex justify-center items-center text-6xl"><i class="fas fa-landmark"></i></div>
+                            <div class="md:col-span-2">
+                                <h3 class="text-2xl font-bold">${leilaoItem.title}</h3>
+                                <p class="text-indigo-200 mb-4">${leilaoItem.desc}</p>
+                                <div class="bg-black bg-opacity-25 rounded-lg p-4 flex justify-between items-center">
+                                    <div><p class="text-sm font-semibold">MAIOR LANCE:</p><p class="text-2xl font-bold text-yellow-300"><i class="fas fa-coins mr-2"></i> ${leilaoItem.highestBid}</p></div>
+                                    <button class="bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold py-3 px-6 rounded-lg transition">Dar um Lance</button>
+                                </div>
+                            </div>
+                         </div>
+                     </div>
+                     <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                         <h2 class="text-3xl font-extrabold text-[var(--pbh-green)] mb-2">Doações Cívicas</h2>
+                         <p class="text-gray-600 mb-6">Use suas BH-Coins para causar um impacto positivo direto!</p>
+                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            ${doacoesData.map(d => `
+                                <div data-filterable-item="true" class="border rounded-lg p-4 text-center flex flex-col">
+                                    <div class="flex-grow">
+                                        <i class="fas ${d.icon} text-4xl text-[var(--pbh-green)] mb-3"></i>
+                                        <h3 class="font-bold">${d.title}</h3>
+                                        <p class="text-sm text-gray-500 mt-1">${d.desc}</p>
+                                    </div>
+                                    <button onclick="fazerDoacao(${d.cost})" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg flex items-center justify-center"><i class="fas fa-coins text-yellow-300 mr-2"></i> ${d.cost}</button>
+                                </div>
+                            `).join('')}
+                         </div>
+                     </div>
+
+                     <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                         <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-2">BH-Coin Marketplace</h2>
+                         <p class="text-gray-600 mb-6">Troque moedas por benefícios reais!</p>
+                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div data-filterable-item="true" class="border rounded-lg p-4 text-center"><img src="https://placehold.co/300x200/fef9c3/854d0e?text=Café" class="rounded-md mb-3 w-full" alt="[Imagem de um café]"><h3 class="font-bold">Café Grátis</h3><p class="text-sm text-gray-500">Parceiro: Café Cultura</p><button class="mt-3 w-full button-primary-bg text-white font-bold py-2 rounded-lg flex items-center justify-center"><i class="fas fa-coins text-yellow-300 mr-2"></i> 25</button></div>
+                            <div data-filterable-item="true" class="border rounded-lg p-4 text-center"><img src="https://placehold.co/300x200/dbeafe/1e40af?text=BHBus" class="rounded-md mb-3 w-full" alt="[Imagem de um autocarro BHBus]"><h3 class="font-bold">R$ 5 em Crédito BHBus</h3><p class="text-sm text-gray-500">Serviço Público</p><button class="mt-3 w-full button-primary-bg text-white font-bold py-2 rounded-lg flex items-center justify-center"><i class="fas fa-coins text-yellow-300 mr-2"></i> 50</button></div>
+                         </div>
+                     </div>
+                 </div>
+            `;
+        }
+
+        function getEducacaoContent() {
+            return `<div class="space-y-8">
+                    <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                        <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Quiz do Cidadão</h2>
+                        <p class="text-gray-600 mb-6">Teste seus conhecimentos sobre Belo Horizonte e ganhe recompensas!</p>
+                        <div class="bg-gray-50 p-6 rounded-lg text-center">
+                            <i class="fas fa-question-circle text-5xl text-[var(--pbh-blue-light)] mb-4"></i>
+                            <p class="mb-4">Pronto para o desafio semanal?</p>
+                            <button onclick="changeScreen('quiz')" class="accent-yellow-bg text-[var(--pbh-blue-dark)] font-bold py-3 px-6 rounded-lg transition text-lg">Começar Quiz!</button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                        <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Mini-Cursos Gamificados</h2>
+                        <div class="p-4 rounded-lg flex items-center bg-green-50 border border-green-200">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center bg-green-100 mr-4"><i class="fas fa-check text-2xl text-green-600"></i></div>
+                            <div class="flex-grow"><h4 class="font-bold text-gray-800">Como construir uma calçada acessível</h4><p class="text-sm text-green-700">Concluído! Você ganhou a medalha "Cidadão Consciente".</p></div>
+                        </div>
+                    </div>
+                 </div>`;
+        }
+        
+        function getQuizContent() {
+            if (currentQuizQuestion >= quizCidadao.length) {
+                return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8 text-center">
+                            <h2 class="text-2xl font-bold">Quiz Finalizado!</h2>
+                            <p class="my-4">Você acertou ${quizScore} de ${quizCidadao.length} perguntas.</p>
+                            <button onclick="resetQuiz()" class="button-primary-bg text-white font-semibold py-2 px-4 rounded-lg">Jogar Novamente</button>
+                        </div>`;
+            }
+            const q = quizCidadao[currentQuizQuestion];
+            return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                        <p class="text-sm font-bold text-gray-500">Pergunta ${currentQuizQuestion + 1}/${quizCidadao.length}</p>
+                        <h2 class="text-2xl font-bold my-4">${q.question}</h2>
+                        <div class="space-y-3">
+                            ${q.options.map((opt, index) => `<button onclick="checkAnswer(${index}, ${q.answer})" class="w-full text-left p-4 rounded-lg bg-gray-100 hover:bg-gray-200">${opt}</button>`).join('')}
+                        </div>
+                    </div>`;
+        }
+        
+        function getFormContent() {
+             return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-10"><h2 class="text-3xl font-extrabold text-gray-800 mb-4 text-[var(--pbh-blue-dark)]">Registrar Nova Denúncia</h2><form onsubmit="event.preventDefault(); showModal('Denúncia Enviada!', 'Obrigado por sua contribuição!');" class="space-y-6"><div><label class="block text-sm font-medium">Endereço</label><input type="text" required class="w-full border-gray-300 rounded-lg p-3"></div><div><label class="block text-sm font-medium">Foto</label><input type="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"></div><div><label class="block text-sm font-medium">Detalhes</label><textarea rows="4" required class="w-full border-gray-300 rounded-lg p-3"></textarea></div><div class="pt-4"><button type="submit" class="w-full flex justify-center items-center py-3 px-4 rounded-lg shadow-lg text-lg font-bold text-white button-primary-bg"><i class="fas fa-paper-plane mr-2"></i> Registrar Denúncia</button></div></form></div>`;
+        }
+        
+        // --- FUNÇÕES RESTAURADAS E ATUALIZADAS ---
+        function getProporAcaoContent() {
+            let propostasHtml = currentPropostas.map(p => `
+                <div data-filterable-item="true" class="bg-white p-4 rounded-lg app-shadow flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-indigo-100 text-indigo-600 text-2xl"><i class="fas ${p.icon}"></i></div>
+                    <div class="flex-grow"><p class="font-bold text-gray-800">${p.title}</p><p class="text-sm text-gray-500">Bairro: ${p.bairro}</p></div>
+                    <button class="flex flex-col items-center justify-center w-20 h-16 rounded-lg transition ${p.userApoiou ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"><i class="fas fa-hands-helping text-xl"></i><span class="font-bold text-lg">${p.apoios}</span></button>
+                </div>`).join('');
+
+            return `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                            <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Propostas da Comunidade</h2>
+                            <p class="text-gray-600 mb-6">Apoie as ideias da sua vizinhança!</p>
+                            <div id="propostas-list" class="space-y-4">${propostasHtml}</div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-1">
+                         <div class="bg-white rounded-xl app-shadow p-6">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Tem uma Ideia?</h3>
+                            <form id="proposta-form" onsubmit="event.preventDefault(); submitNovaProposta();" class="space-y-4">
+                                <div><label for="prop-titulo" class="block text-sm font-medium">Título</label><input type="text" id="prop-titulo" required class="w-full border-gray-300 rounded-lg p-2 mt-1"></div>
+                                <div><label for="prop-bairro" class="block text-sm font-medium">Bairro</label><input type="text" id="prop-bairro" required class="w-full border-gray-300 rounded-lg p-2 mt-1"></div>
+                                <button type="submit" class="w-full button-primary-bg text-white font-semibold py-2 rounded-lg transition">Enviar Proposta</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        function getOrcamentoContent() {
+            return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                        <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Orçamento Participativo</h2>
+                        <p class="text-gray-600 mb-6">Use suas BH-Coins para votar nas prioridades do seu bairro! Cada moeda é um voto.</p>
+                        <div class="space-y-4">${orcamentoItens.map(item => `
+                            <div data-filterable-item="true" class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <i class="fas ${item.icon} text-indigo-500 text-2xl w-8 mr-4"></i>
+                                        <p class="font-bold text-gray-800">${item.title}</p>
+                                    </div>
+                                    <span class="font-bold text-indigo-600">${item.currentVotes} votos</span>
+                                </div>
+                                <div class="flex items-center space-x-2 mt-3">
+                                    <input type="number" placeholder="10" class="w-24 border-gray-300 rounded-lg p-2 text-sm">
+                                    <button class="flex-1 button-primary-bg text-white font-semibold py-2 px-3 rounded-lg transition text-sm">Votar com BH-Coins</button>
+                                </div>
+                            </div>`).join('')}
+                        </div>
+                    </div>`;
+        }
+        function getEmpresasContent() {
+             return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-10">
+                        <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-6">Empresas Parceiras</h2>
+                        <p class="text-lg mb-6">Sua empresa pode ser uma parceira da PBH. O programa <strong>Adote BH</strong> permite que empresas adotem espaços públicos em troca de visibilidade.</p>
+                        <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Ranking de Empresas Parceiras</h3>
+                        <div class="space-y-3">
+                        ${empresasParceiras.map(e => `
+                            <div data-filterable-item="true" class="flex items-center p-4 bg-gray-50 rounded-lg">
+                                <div class="text-2xl font-bold w-10 text-center ${e.rank < 3 ? 'text-indigo-600' : 'text-gray-500'}">#${e.rank}</div>
+                                <div class="text-3xl mx-4 text-indigo-400"><i class="fas fa--${e.logo}"></i></div>
+                                <div class="flex-grow">
+                                    <p class="font-bold text-lg text-gray-800">${e.name}</p>
+                                    <p class="text-sm text-gray-500">${e.adocoes} adoções | <span class="font-semibold text-green-600">${e.impacto}</span></p>
+                                </div>
+                            </div>
+                        `).join('')}
+                        </div>
+                    </div>`;
+        }
+        function getDashboardPublicoContent() {
+             const heatmapCells = Array.from({length: 50}, (_, i) => {
+                const intensity = Math.random();
+                let colorClass = 'bg-green-200';
+                if (intensity > 0.5) colorClass = 'bg-yellow-300';
+                if (intensity > 0.8) colorClass = 'bg-red-400';
+                return `<div class="heatmap-cell ${colorClass}"></div>`;
+            }).join('');
+            
+             return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                     <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Painel de Transparência</h2>
+                     <p class="text-gray-600 mb-8">Dados abertos sobre as denúncias e o tempo de resposta da prefeitura. (Dados simulados)</p>
+                     
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                         <div class="bg-indigo-50 p-5 rounded-lg text-center"><p class="text-sm text-indigo-800">Tempo Médio de Resolução</p><p class="text-3xl font-bold text-indigo-900">7 dias</p></div>
+                         <div class="bg-green-50 p-5 rounded-lg text-center"><p class="text-sm text-green-800">Denúncias Resolvidas (Mês)</p><p class="text-3xl font-bold text-green-900">1.284</p></div>
+                         <div class="bg-yellow-50 p-5 rounded-lg text-center"><p class="text-sm text-yellow-800">Nível de Satisfação Cidadã</p><p class="text-3xl font-bold text-yellow-900">8.2/10</p></div>
+                     </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">Problemas Mais Comuns (Últimos 30 dias)</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex items-center"><span class="w-36 text-gray-600">Buraco na Calçada</span><div class="flex-grow bg-gray-200 rounded-full h-5"><div class="bg-indigo-500 h-5 rounded-full" style="width: 85%"></div></div><span class="w-12 text-right font-bold">85%</span></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">Mapa de Calor de Denúncias (Regional Centro-Sul)</h3>
+                            <div class="heatmap-grid">${heatmapCells}</div>
+                        </div>
+                    </div>
+                 </div>`;
+        }
+        function getLegislacaoContent() {
+             return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-10">
+                        <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-6">Legislação e a Cidade</h2>
+                        <div class="space-y-4">
+                            <div data-filterable-item="true" class="bg-indigo-50 p-5 rounded-lg border-l-4 border-indigo-500"><p class="font-bold text-indigo-700">Lei Nº 8.616/2003 - Código de Posturas</p><p class="text-sm text-gray-700">Estabelece as normas relativas à estética urbana, incluindo a obrigatoriedade de conservação dos passeios.</p></div>
+                            <div data-filterable-item="true" class="bg-indigo-50 p-5 rounded-lg border-l-4 border-indigo-500"><p class="font-bold text-indigo-700">Decreto Nº 17.550/2021</p><p class="text-sm text-gray-700">Dispõe sobre os padrões de acessibilidade e construção de calçadas.</p></div>
+                            <div data-filterable-item="true" class="bg-indigo-50 p-5 rounded-lg border-l-4 border-indigo-500"><p class="font-bold text-indigo-700">Lei Orgânica do Município de Belo Horizonte</p><p class="text-sm text-gray-700">A "constituição" da cidade, que define a estrutura política e administrativa, os direitos e deveres fundamentais.</p></div>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-gray-800 mt-8 mb-4">Sobre Belo Horizonte</h3>
+                        <div class="prose max-w-none text-gray-700 space-y-4">
+                            <p>Belo Horizonte, a capital de Minas Gerais, foi a primeira cidade planejada do Brasil, inaugurada em 12 de dezembro de 1897. Projetada pelo engenheiro Aarão Reis, a cidade é conhecida por sua vibrante cena cultural, pela culinária excepcional e por ser cercada pela Serra do Curral, que serve como um belo cartão-postal.</p>
+                        </div>
+
+                        <h3 class="text-2xl font-extrabold text-indigo-700 mt-8 mb-4">Perguntas Frequentes (FAQ)</h3>
+                        <div class="space-y-4">
+                            <details data-filterable-item="true" class="bg-gray-50 p-4 rounded-lg cursor-pointer"><summary class="font-semibold text-gray-800">De quem é a responsabilidade pela calçada?</summary><p class="mt-2 text-gray-600 text-sm">A responsabilidade pela construção, manutenção e conservação da calçada é sempre do proprietário do imóvel, seja ele residencial ou comercial.</p></details>
+                            <details data-filterable-item="true" class="bg-gray-50 p-4 rounded-lg cursor-pointer"><summary class="font-semibold text-gray-800">Posso ser multado se minha calçada estiver irregular?</summary><p class="mt-2 text-gray-600 text-sm">Sim. A fiscalização da prefeitura pode notificar e multar proprietários cujas calçadas não atendam aos padrões de conservação e acessibilidade previstos em lei.</p></details>
+                        </div>
+                    </div>`;
+        }
+        function getOuvidoriaContent() {
+            return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-10">
+                        <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-6">Ouvidoria e Canais de Atendimento</h2>
+                        <p class="text-lg mb-6">Encontre aqui os principais canais de contato da Prefeitura de Belo Horizonte para reclamações, sugestões e informações.</p>
+                        <div class="space-y-6">
+                            <div data-filterable-item="true" class="bg-gray-50 p-5 rounded-lg border-l-4 border-indigo-500"><h3 class="font-bold text-xl text-indigo-800">Ouvidoria-Geral do Município</h3><p class="text-gray-600 mt-1">Canal para manifestações sobre os serviços públicos municipais.</p><div class="mt-3 space-y-1 text-sm"><p><i class="fas fa-phone-alt w-4 mr-2 text-gray-500"></i> <strong>Telefone:</strong> 156</p><p><i class="fas fa-globe w-4 mr-2 text-gray-500"></i> <strong>Portal de Serviços:</strong> servicos.pbh.gov.br</p></div></div>
+                            <div data-filterable-item="true" class="bg-gray-50 p-5 rounded-lg border-l-4 border-blue-500"><h3 class="font-bold text-xl text-blue-800">Guarda Civil Municipal</h3><p class="text-gray-600 mt-1">Para emergências e denúncias de desordem urbana.</p><div class="mt-3 space-y-1 text-sm"><p><i class="fas fa-phone-alt w-4 mr-2 text-gray-500"></i> <strong>Telefone de Emergência:</strong> 153</p></div></div>
+                            <div data-filterable-item="true" class="bg-gray-50 p-5 rounded-lg border-l-4 border-orange-500"><h3 class="font-bold text-xl text-orange-800">Defesa Civil</h3><p class="text-gray-600 mt-1">Para alertas de risco e emergências climáticas.</p><div class="mt-3 space-y-1 text-sm"><p><i class="fas fa-phone-alt w-4 mr-2 text-gray-500"></i> <strong>Telefone de Emergência:</strong> 199</p></div></div>
+                            <div data-filterable-item="true" class="bg-gray-50 p-5 rounded-lg border-l-4 border-green-500"><h3 class="font-bold text-xl text-green-800">SLU - Limpeza Urbana</h3><p class="text-gray-600 mt-1">Informações sobre coleta de lixo, reciclagem e limpeza.</p><div class="mt-3 space-y-1 text-sm"><p><i class="fas fa-phone-alt w-4 mr-2 text-gray-500"></i> <strong>Telefone:</strong> 156</p></div></div>
+                            <div data-filterable-item="true" class="bg-gray-50 p-5 rounded-lg border-l-4 border-yellow-500"><h3 class="font-bold text-xl text-yellow-800">BHTrans</h3><p class="text-gray-600 mt-1">Informações sobre trânsito e transporte público.</p><div class="mt-3 space-y-1 text-sm"><p><i class="fas fa-phone-alt w-4 mr-2 text-gray-500"></i> <strong>Telefone:</strong> 156</p></div></div>
+                        </div>
+                    </div>`;
+        }
+        function getAdocaoContent() {
+            return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                    <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-2">Adote uma Calçada</h2>
+                    <p class="text-gray-600 mb-6">Adote um microtrecho da sua rua e ganhe pontos mensais registrando sua manutenção.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="font-bold text-xl mb-4">Seu Espaço Adotado</h3>
+                            <p class="font-semibold text-gray-800">Calçada em frente à Rua Timbiras, 150</p>
+                            <div class="mt-4 grid grid-cols-2 gap-4">
+                                <div><p class="text-xs font-bold">ANTES</p><img src="https://placehold.co/400x300/fecaca/7f1d1d?text=Calçada+Quebrada" class="rounded-lg mt-1" alt="[Imagem de calçada quebrada]"></div>
+                                <div><p class="text-xs font-bold">DEPOIS</p><img src="https://placehold.co/400x300/dcfce7/14532d?text=Calçada+Nova" class="rounded-lg mt-1" alt="[Imagem de calçada consertada]"></div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-6">
+                             <h3 class="font-bold text-xl mb-4">Adotar um Novo Espaço</h3>
+                             <form onsubmit="event.preventDefault(); showModal('Sucesso!', 'Seu pedido de adoção foi enviado para análise.');" class="space-y-4">
+                                <div><label class="text-sm font-medium">Endereço do trecho</label><input type="text" required class="w-full border-gray-300 rounded-lg p-2 mt-1"></div>
+                                <div><label class="text-sm font-medium">Foto do estado atual</label><input type="file" required class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"></div>
+                                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition">Quero Adotar!</button>
+                             </form>
+                        </div>
+                    </div>
+                </div>`;
+        }
+        function getRankingContent() {
+            const rankingBairros = [
+                { nome: 'Savassi', resolvidas: 125, icon: 'fa-glass-cheers' },
+                { nome: 'Centro', resolvidas: 110, icon: 'fa-building' },
+                { nome: 'Funcionários', resolvidas: 98, icon: 'fa-briefcase' }
+            ];
+            let rankingHtml = rankingBairros.map((b, index) => `<div data-filterable-item="true" class="flex items-center p-4 bg-white rounded-lg app-shadow"><div class="text-2xl font-bold w-12 text-center text-indigo-600">${index + 1}</div><div class="text-4xl mx-4 text-indigo-300"><i class="fas ${b.icon}"></i></div><div class="flex-grow"><p class="font-bold text-lg text-gray-800">${b.nome}</p><p class="text-sm text-gray-500">${b.resolvidas} denúncias resolvidas</p></div></div>`).join(''); 
+            return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Rankings Cívicos</h2>
+                <div class="space-y-4">${rankingHtml}</div>
+                </div>`;
+        }
+        window.submitNovaProposta = function() {
+            const form = document.getElementById('proposta-form');
+            const title = form['prop-titulo'].value.trim();
+            const bairro = form['prop-bairro'].value.trim();
+            if (!title || !bairro) { return; }
+            currentPropostas.push({ id: Date.now(), title, bairro, apoios: 1, userApoiou: true, icon: 'fa-star' });
+            changeScreen('propor-acao', {}, false);
+            showModal("Sucesso!", "Sua proposta foi adicionada à lista!");
+        }
+
+        // --- Funções Auxiliares ---
+        function renderDenuncias() {
+            const listElement = document.getElementById('denuncias-list');
+            if (!listElement) return;
+            listElement.innerHTML = denuncias.map(d => {
+                const timelineHtml = d.timeline.map(t => `
+                    <div class="timeline-item ${t.completed ? 'completed' : ''}">
+                        <div class="timeline-icon"><i class="fas ${t.completed ? 'fa-check' : 'fa-clock'}"></i></div>
+                        <div class="timeline-content text-sm ${t.completed ? 'text-gray-700' : 'text-gray-500'}">${t.status}</div>
+                    </div>`).join('<div class="h-4 border-l-2 border-gray-200 ml-4"></div>');
+                
+                const comunicadosHtml = d.comunicados.map(c => `
+                    <div class="mt-3 bg-gray-50 p-3 rounded-lg"><p class="text-xs font-bold text-gray-500">${c.de}</p><p class="text-sm text-gray-700">${c.msg}</p></div>
+                `).join('');
+
+                return `<div data-filterable-item="true" class="bg-white p-5 rounded-xl app-shadow">
+                            <div class="flex justify-between items-start mb-3">
+                               <div> <p class="text-lg font-bold text-gray-800">${d.endereco}</p> <p class="text-gray-600 mt-1 text-sm">${d.descricao}</p> </div>
+                                <p class="text-sm text-gray-500 font-medium flex-shrink-0 ml-4">${d.dataCriacao.toLocaleDateString('pt-BR')}</p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 pt-4 border-t">
+                                <div><h4 class="text-sm font-bold mb-2">Linha do Tempo</h4>${timelineHtml}</div>
+                                <div><h4 class="text-sm font-bold mb-2">Atualizações da Prefeitura</h4>${comunicadosHtml}</div>
+                            </div>
+                        </div>`;
+            }).join('');
+        }
+
+        function renderEnquete() {
+            const container = document.getElementById('enquete-container');
+            if (!container) return;
+            const totalVotes = enqueteData.options.reduce((sum, opt) => sum + opt.votes, 0);
+            const optionsHtml = enqueteData.options.map((opt, index) => {
+                const percentage = totalVotes > 0 ? ((opt.votes / totalVotes) * 100).toFixed(0) : 0;
+                return `<div class="mb-2">
+                            <button onclick="votarEnquete(${index})" class="w-full text-left text-sm p-2 rounded-lg bg-gray-100 hover:bg-gray-200">${opt.text}</button>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1"><div class="bg-green-500 h-2.5 rounded-full" style="width: ${percentage}%"></div></div>
+                        </div>`;
+            }).join('');
+            container.innerHTML = `<p class="text-sm font-semibold mb-2">${enqueteData.question}</p>${optionsHtml}`;
+        }
+        window.votarEnquete = function(index) {
+            enqueteData.options[index].votes++;
+            renderEnquete();
+        }
+        window.gerarConvite = function() {
+            const local = document.getElementById('convite-local').value || "nosso bairro";
+            const data = document.getElementById('convite-data').value || "em breve";
+            const texto = `📢 *CONVITE PARA MUTIRÃO CÍVICO* 📢\n\nVamos juntos melhorar ${local}!\n\n🗓️ *Quando:* ${data}\n📍 *Onde:* Ponto de encontro a definir\n\nVamos mostrar a força da nossa comunidade! Conto com você! 💪\n\n(Organizado via Portal Cívico de BH)`;
+            navigator.clipboard.writeText(texto)
+                .then(() => showModal("Convite Copiado!", "O texto do convite foi copiado. Agora é só colar no WhatsApp e chamar a galera!"))
+                .catch(() => showModal("Erro", "Não foi possível copiar o texto."));
+        }
+        window.fazerDoacao = function(cost) {
+            if (userProfile.bhCoin >= cost) {
+                userProfile.bhCoin -= cost;
+                updateUI();
+                showModal("Doação Realizada!", `Obrigado! Suas ${cost} BH-Coins foram doadas para a causa. Você faz a diferença!`);
+            } else {
+                showModal("Saldo Insuficiente", "Você não tem BH-Coins suficientes para fazer esta doação. Complete mais missões!");
+            }
+        }
+        window.checkAnswer = function(selectedIndex, correctIndex) {
+            if (selectedIndex === correctIndex) {
+                quizScore++;
+                showModal("Resposta Correta!", "Você ganhou +10 BH-Coins!");
+                userProfile.bhCoin += 10;
+                updateUI();
+            } else {
+                showModal("Resposta Incorreta", "Mais sorte na próxima vez!");
+            }
+            currentQuizQuestion++;
+            changeScreen('quiz', {}, false);
+        }
+        window.resetQuiz = function() {
+            currentQuizQuestion = 0;
+            quizScore = 0;
+            changeScreen('educacao');
+        }
+        function updateUI() {
+            document.getElementById('user-id').textContent = (window.userId || '...').substring(0, 8);
+            document.getElementById('bh-coin-balance').textContent = userProfile.bhCoin;
+        }
+        window.toggleSidebar = function(forceClose = false) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isHidden = sidebar.classList.contains('-translate-x-full');
+            if (isHidden && !forceClose) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                overlay.classList.add('opacity-50');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.remove('opacity-50');
+                overlay.classList.add('hidden');
+            }
+        }
+        window.showModal = function(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = message;
+            document.getElementById('custom-modal').classList.remove('hidden');
+            document.getElementById('custom-modal').classList.add('flex');
+        }
+        window.hideModal = function() { document.getElementById('custom-modal').classList.add('hidden'); }
+        window.showBelobotTip = function() {
+            const tips = ["Participe do Quiz do Cidadão na aba 'Educação Cívica' para ganhar BH-Coins fáceis!", "Fique de olho na Batalha de Clubes! A competição está acirrada.", "Doe suas BH-Coins para causas nobres e ganhe emblemas de 'Doador'.", "Confira o Passe de Temporada para ver as recompensas exclusivas que você pode desbloquear!"];
+            showModal("Dica do BelôBot 🤖", tips[Math.floor(Math.random() * tips.length)]);
+        }
+        function getConquistasContent() { 
+            const levelInfo = levelTitles[userProfile.levelIndex];
+            const badgesHtml = Object.keys(badgesData).map(key => { 
+                const badge = badgesData[key]; 
+                const unlocked = userProfile.badges?.includes(key); 
+                return `<div class="badge ${unlocked ? 'unlocked' : ''} bg-white p-5 rounded-lg text-center app-shadow transform transition"><div class="w-20 h-20 mx-auto rounded-full flex items-center justify-center ${unlocked ? 'bg-yellow-100' : 'bg-gray-100'}"><i class="fas ${badge.icon} ${unlocked ? 'text-yellow-500' : 'text-gray-400'} text-4xl"></i></div><h4 class="font-bold text-gray-800 mt-3">${badge.title}</h4><p class="text-sm text-gray-500">${badge.desc}</p></div>`;
+            }).join(''); 
+
+            return `<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="bg-white rounded-xl app-shadow p-6 text-center">
+                            <img src="https://placehold.co/150x150/e0e7ff/003B62?text=Cidadão" class="rounded-full w-32 h-32 mx-auto mb-4 border-4 border-[var(--pbh-blue-light)] shadow-lg" alt="[Imagem do avatar do utilizador]">
+                            <h3 class="text-2xl font-bold text-gray-800">Cidadão-${(window.userId || '').substring(0,4)}</h3>
+                            <div class="mt-2 bg-blue-50 border border-blue-200 rounded-full p-2 flex items-center justify-center space-x-2">
+                                <i class="fas ${levelInfo.icon} text-blue-500"></i>
+                                <span class="text-blue-900 font-semibold">${levelInfo.title}</span>
+                            </div>
+                        </div>
+                         <div class="bg-white rounded-xl app-shadow p-6">
+                            <h3 class="font-bold text-lg mb-3">Resumo de Impacto (Mensal)</h3>
+                            <ul class="text-sm space-y-2 text-gray-700">
+                                <li class="flex justify-between"><span>Ações Realizadas:</span><span class="font-bold">${userProfile.denunciasValidas + userProfile.multiroes}</span></li>
+                                <li class="flex justify-between"><span>Moedas Ganhas:</span><span class="font-bold">${userProfile.bhCoin}</span></li>
+                            </ul>
+                         </div>
+                    </div>
+                     <div class="lg:col-span-2 bg-white rounded-xl app-shadow p-6 lg:p-8">
+                        <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Minhas Conquistas</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">${badgesHtml}</div>
+                    </div>
+                </div>`;
+        }
+    </script>
+</body>
+</html>
