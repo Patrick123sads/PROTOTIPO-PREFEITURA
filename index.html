@@ -77,8 +77,9 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
+    <!-- ... (Header e Modal HTML inalterados) ... -->
     <div class="bg-red-600 text-white text-center p-2 font-bold text-sm z-50">
-        ESSE SÍTE É APENAS UM PROTÓTIPO ACADÊMICO, NÃO HÁ RELAÇÃO COM O SITE OFICIAL DA PREFEITURA
+        ESSE SÍTE É APENAS UM PROTÓTIPO ACADÊMICO, NÃO HÁ RELAÇÃO COM O SITE DA PREFEITURA OFICIAL
     </div>
 
     <header class="w-full bg-white shadow-md z-20">
@@ -127,6 +128,8 @@
     </div>
     
     <div id="sidebar-overlay" class="fixed inset-0 bg-black opacity-0 z-40 hidden transition-opacity duration-300" onclick="toggleSidebar(true)"></div>
+    
+    <!-- === SIDEBAR ATUALIZADO === -->
     <div id="sidebar" class="fixed top-0 left-0 h-full w-72 sidebar-bg text-white z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
         <div class="p-5 border-b border-gray-700 flex items-center justify-between flex-shrink-0">
             <h3 class="text-lg font-extrabold highlight-yellow">Menu Cívico</h3>
@@ -138,18 +141,32 @@
             <div id="nav-missoes" onclick="changeScreen('missoes')" class="sidebar-item"><i class="fas fa-bullseye w-5 mr-3"></i> <span>Missões e Desafios</span></div>
             
             <div class="px-6 py-2 mt-2 text-xs text-gray-400 font-semibold uppercase tracking-wider">Ações Cívicas</div>
-            <div id="nav-denuncia" onclick="changeScreen('denuncia')" class="sidebar-item"><i class="fas fa-pencil-alt w-5 mr-3"></i> <span>Nova Denúncia</span></div>
-            <div id="nav-status" onclick="changeScreen('status')" class="sidebar-item"><i class="fas fa-tasks w-5 mr-3"></i> <span>Acompanhamento</span></div>
-            <div id="nav-multiroes" onclick="changeScreen('multiroes')" class="sidebar-item"><i class="fas fa-users w-5 mr-3"></i> <span>Mutirões</span></div>
+            <!-- Item 2 (Unificado) -->
+            <div id="nav-denuncia" onclick="changeScreen('denuncia')" class="sidebar-item"><i class="fas fa-pencil-alt w-5 mr-3"></i> <span>Denúncias e Acompanhamento</span></div>
+            <!-- nav-status removido -->
+            <!-- nav-multiroes removido -->
+            <div id="nav-alerta-risco" onclick="changeScreen('alerta-risco')" class="sidebar-item"><i class="fas fa-exclamation-triangle w-5 mr-3"></i> <span>Alerta de Risco Cidadão</span></div>
+            <!-- Item 3 (Unificado) -->
+            <div id="nav-match-civico" onclick="changeScreen('match-civico')" class="sidebar-item"><i class="fas fa-hands-helping w-5 mr-3"></i> <span>Engajamento Comunitário</span></div>
+            <!-- Item 7 (Movido) -->
+            <div id="nav-adocao" onclick="changeScreen('adocao')" class="sidebar-item"><i class="fas fa-hand-holding-heart w-5 mr-3"></i> <span>Adote uma Calçada</span></div>
+            <div id="nav-educacao" onclick="changeScreen('educacao')" class="sidebar-item"><i class="fas fa-graduation-cap w-5 mr-3"></i> <span>Educação Cívica</span></div>
             
             <div class="px-6 py-2 mt-2 text-xs text-gray-400 font-semibold uppercase tracking-wider">Comunidade</div>
-            <div id="nav-clubes" onclick="changeScreen('clubes')" class="sidebar-item"><i class="fas fa-shield-alt w-5 mr-3"></i> <span>Clubes Cívicos</span></div>
-            <div id="nav-propor-acao" onclick="changeScreen('propor-acao')" class="sidebar-item"><i class="fas fa-lightbulb w-5 mr-3"></i> <span>Propostas da Comunidade</span></div>
-            <div id="nav-orcamento" onclick="changeScreen('orcamento')" class="sidebar-item"><i class="fas fa-vote-yea w-5 mr-3"></i> <span>Orçamento Participativo</span></div>
-            
+            <!-- nav-clubes removido -->
+            <!-- nav-propor-acao removido -->
+            <!-- nav-orcamento removido -->
+            <!-- Item 4 (Unificado) -->
+            <div id="nav-labideias" onclick="changeScreen('labideias')" class="sidebar-item"><i class="fas fa-brain w-5 mr-3"></i> <span>Ideias e Orçamento</span></div>
+            <div id="nav-guardioes" onclick="changeScreen('guardioes')" class="sidebar-item"><i class="fas fa-landmark w-5 mr-3"></i> <span>Guardiões de Patrimônio</span></div>
+            <div id="nav-eleicao-lideres" onclick="changeScreen('eleicao-lideres')" class="sidebar-item"><i class="fas fa-user-check w-5 mr-3"></i> <span>Eleição de Líderes</span></div>
+
             <div class="px-6 py-2 mt-2 text-xs text-gray-400 font-semibold uppercase tracking-wider">Gamificação & Recompensas</div>
-            <div id="nav-temporadas" onclick="changeScreen('temporadas')" class="sidebar-item"><i class="fas fa-flag-checkered w-5 mr-3"></i> <span>Temporadas Temáticas</span></div>
-            <div id="nav-progresso" onclick="changeScreen('progresso')" class="sidebar-item"><i class="fas fa-map-marked-alt w-5 mr-3"></i> <span>Mapa da Cidade</span></div>
+            <!-- Item 5 (Unificado) -->
+            <div id="nav-temporadas" onclick="changeScreen('temporadas')" class="sidebar-item"><i class="fas fa-flag-checkered w-5 mr-3"></i> <span>Mapa e Temporadas</span></div>
+            <!-- nav-progresso removido -->
+            <div id="nav-cacatesouros" onclick="changeScreen('cacatesouros')" class="sidebar-item"><i class="fas fa-map-signs w-5 mr-3"></i> <span>Caça aos Tesouros</span></div>
+            <div id="nav-comercio-local" onclick="changeScreen('comercio-local')" class="sidebar-item"><i class="fas fa-store w-5 mr-3"></i> <span>Desafio Comércio Local</span></div>
             <div id="nav-ranking" onclick="changeScreen('ranking')" class="sidebar-item"><i class="fas fa-award w-5 mr-3"></i> <span>Rankings</span></div>
             <div id="nav-recompensas" onclick="changeScreen('recompensas')" class="sidebar-item"><i class="fas fa-gem w-5 mr-3"></i> <span>Loja e Doações</span></div>
             
@@ -157,17 +174,21 @@
             <div id="nav-governo" onclick="changeScreen('governo')" class="sidebar-item"><i class="fas fa-landmark w-5 mr-3"></i> <span>Estrutura de Governo</span></div>
             <div id="nav-ouvidoria" onclick="changeScreen('ouvidoria')" class="sidebar-item"><i class="fas fa-phone-alt w-5 mr-3"></i> <span>Ouvidoria</span></div>
             <div id="nav-legislacao" onclick="changeScreen('legislacao')" class="sidebar-item"><i class="fas fa-book w-5 mr-3"></i> <span>Legislação</span></div>
-            <div id="nav-empresas" onclick="changeScreen('empresas')" class="sidebar-item"><i class="fas fa-building w-5 mr-3"></i> <span>Empresas Parceiras</span></div>
+            <!-- nav-empresas removido -->
+            <!-- Item 6 (Unificado) -->
+            <div id="nav-embaixada" onclick="changeScreen('embaixada')" class="sidebar-item"><i class="fas fa-briefcase w-5 mr-3"></i> <span>Parcerias Empresariais</span></div>
             <div id="nav-dashboard-publico" onclick="changeScreen('dashboard-publico')" class="sidebar-item"><i class="fas fa-chart-pie w-5 mr-3"></i> <span>Painel de Transparência</span></div>
-            <div id="nav-adocao" onclick="changeScreen('adocao')" class="sidebar-item"><i class="fas fa-hand-holding-heart w-5 mr-3"></i> <span>Adote uma Calçada</span></div>
-            <div id="nav-educacao" onclick="changeScreen('educacao')" class="sidebar-item"><i class="fas fa-graduation-cap w-5 mr-3"></i> <span>Educação Cívica</span></div>
+            <!-- nav-adocao e nav-educacao movidos para cima -->
         </nav>
     </div>
+    <!-- === FIM SIDEBAR ATUALIZADO === -->
+
 
     <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow w-full">
         <div id="content-container" class="min-h-[60vh]"></div>
     </main>
 
+    <!-- ... (Mascote e Footer HTML inalterados) ... -->
     <div class="fixed bottom-5 right-5 cursor-pointer transform hover:scale-110 transition-transform duration-200" onclick="showBelobotTip()">
         <div class="absolute -top-8 -right-8 bg-[var(--pbh-blue-light)] text-white text-xs font-bold px-3 py-1 rounded-full animate-bounce">
             Dica!
@@ -204,6 +225,7 @@
 
     <script type="module">
         // --- DADOS DE GAMIFICAÇÃO (Simulados e Expandidos) ---
+        // ... (Dados inalterados) ...
         const userProfile = {
             points: 155, bhCoin: 210, denunciasValidas: 8, multiroes: 1, cursos: 1, denunciaStreak: 2,
             unlockedRegions: ['Centro-Sul', 'Leste'], levelIndex: 2, 
@@ -367,27 +389,60 @@
             const contentContainer = document.getElementById('content-container');
             contentContainer.innerHTML = getScreenContent(screenName, params);
             document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-            document.getElementById(`nav-${screenName.split('-')[0]}`)?.classList.add('active');
+            // Ajusta o seletor para pegar o ID correto (ex: nav-alerta-risco)
+            document.getElementById(`nav-${screenName.replace('-detalhe', '')}`)?.classList.add('active');
             
-            if (screenName === 'status') renderDenuncias();
+            // ATUALIZADO: Chama renderDenuncias na nova página unificada
+            if (screenName === 'denuncia') renderDenuncias();
             if (screenName === 'dashboard') renderEnquete();
         };
 
         function getScreenContent(screenName, params) {
+            // === MAPEAMENTO DE TELAS ATUALIZADO ===
             const screens = {
-                'dashboard': getDashboardContent, 'conquistas': getConquistasContent, 'missoes': getMissoesContent, 'denuncia': getFormContent, 'status': getStatusContent,
-                'multiroes': getMultiroesContent, 'clubes': getClubesContent, 'clube-detalhe': getClubeDetalheContent, 'propor-acao': getProporAcaoContent, 'orcamento': getOrcamentoContent,
-                'temporadas': getTemporadasContent, 'season-pass': getSeasonPassContent, 'progresso': getProgressoContent, 'ranking': getRankingContent, 'recompensas': getRecompensasContent,
-                'adocao': getAdocaoContent, 'empresas': getEmpresasContent, 'dashboard-publico': getDashboardPublicoContent,
-                'educacao': getEducacaoContent, 'quiz': getQuizContent, 'legislacao': getLegislacaoContent, 'ouvidoria': getOuvidoriaContent,
-                'governo': getGovernoContent
+                'dashboard': getDashboardContent, 
+                'conquistas': getConquistasContent, 
+                'missoes': getMissoesContent, 
+                'denuncia': getDenunciaEStatusContent, // Unificado
+                //'status': getStatusContent, // Removido
+                //'multiroes': getMultiroesContent, // Removido
+                'alerta-risco': getAlertaRiscoContent,
+                'match-civico': getEngajamentoComunitarioContent, // Unificado
+                //'clubes': getClubesContent, // Removido
+                //'propor-acao': getProporAcaoContent, // Removido
+                //'orcamento': getOrcamentoContent, // Removido
+                'labideias': getIdeiasEOrcamentoContent, // Unificado
+                'guardioes': getGuardioesContent,
+                'eleicao-lideres': getEleicaoLideresContent,
+                'temporadas': getMapaETemporadasContent, // Unificado
+                //'progresso': getProgressoContent, // Removido
+                'cacatesouros': getCacaTesourosContent,
+                'comercio-local': getComercioLocalContent,
+                'ranking': getRankingContent, 
+                'recompensas': getRecompensasContent,
+                'governo': getGovernoContent, 
+                'ouvidoria': getOuvidoriaContent,
+                'legislacao': getLegislacaoContent,
+                //'empresas': getEmpresasContent, // Removido
+                'embaixada': getParceriasEmpresariaisContent, // Unificado
+                'dashboard-publico': getDashboardPublicoContent,
+                'adocao': getAdocaoContent, 
+                'educacao': getEducacaoContent,
+                
+                // Telas de detalhe
+                'clube-detalhe': getClubeDetalheContent,
+                'season-pass': getSeasonPassContent, 
+                'quiz': getQuizContent, 
             };
             return (screens[screenName] || (() => `<h2>Página não encontrada: ${screenName}</h2>`))(params);
         }
+        // === FIM MAPEAMENTO DE TELAS ===
+
 
         // --- FUNÇÕES DE CONTEÚDO ---
 
         window.performSearch = function() {
+            // ... (Função inalterada) ...
             const query = document.getElementById('search-input').value.toLowerCase();
             const contentContainer = document.getElementById('content-container');
             const items = contentContainer.querySelectorAll('[data-filterable-item="true"]');
@@ -412,6 +467,7 @@
             });
         }
 
+        // === DASHBOARD ATUALIZADO ===
         function getDashboardContent() {
              const progress = Math.min((userProfile.denunciasValidas / 10) * 100, 100); 
              // Gera o HTML para os cards de notícias
@@ -427,14 +483,67 @@
                 </div>
              `).join('');
 
+            // --- NOVO CONTEÚDO: Batalha das Regionais ---
+            // Simulação de dados para a Batalha
+            const regionaisBatalha = [
+                { nome: 'Pampulha', pontos: 1250, cor: 'bg-cyan-500' },
+                { nome: 'Centro-Sul', pontos: 1180, cor: 'bg-sky-500' },
+                { nome: 'Leste', pontos: 950, cor: 'bg-rose-500' },
+                { nome: 'Oeste', pontos: 880, cor: 'bg-violet-500' },
+                { nome: 'Barreiro', pontos: 720, cor: 'bg-orange-500' },
+            ].sort((a, b) => b.pontos - a.pontos);
+
+            const batalhaHtml = `
+            <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-extrabold text-gray-800">Batalha das Regionais</h2>
+                    <i class="fas fa-trophy text-3xl text-yellow-500"></i>
+                </div>
+                <p class="text-gray-600 mb-6">A competição cívica trimestral de BH! Veja o placar em tempo real e ajude sua regional a vencer.</p>
+                <div class="space-y-3">
+                    ${regionaisBatalha.map((r, index) => {
+                        const maxPontos = regionaisBatalha[0].pontos;
+                        const percent = (r.pontos / maxPontos) * 100;
+                        return `
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-lg w-6 text-center">${index + 1}º</span>
+                            <div class="flex-grow bg-gray-200 rounded-full h-6 overflow-hidden">
+                                <div class="${r.cor} h-full flex items-center justify-between px-3 text-white font-bold text-sm rounded-full" style="width: ${percent}%">
+                                    <span>${r.nome}</span>
+                                    <span>${r.pontos} pts</span>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    }).join('')}
+                </div>
+                <button class="mt-6 w-full sm:w-auto accent-yellow-bg text-gray-900 font-semibold py-2 px-4 rounded-lg text-center text-sm transition">
+                    Ver detalhes da Batalha
+                </button>
+            </div>
+            `;
+            // --- FIM NOVO CONTEÚDO ---
+            
+            // --- HTML DO CALÇADÔMETRO ---
+            const calcadometroHtml = `
+            <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                <div class="flex items-center justify-between mb-4"><h2 class="text-2xl font-extrabold text-gray-800">Calçadômetro de BH</h2><i class="fas fa-shoe-prints text-3xl text-[var(--pbh-blue-light)]"></i></div>
+               <p class="text-gray-600 mb-4">Este é um indicador do progresso coletivo na regularização das calçadas, baseado na sua participação.</p>
+               <div class="bg-gray-200 rounded-full h-8 w-full overflow-hidden"><div class="progress-bar-fill bg-gradient-to-r from-[var(--pbh-green)] to-[var(--pbh-blue-light)] h-full flex items-center justify-center text-white font-bold" style="width: ${progress}%">${Math.round(progress)}%</div></div>
+               <p class="text-center text-sm mt-2 text-gray-500">Sua contribuição para a meta regional.</p>
+           </div>
+            `;
+            // --- FIM CALÇADÔMETRO ---
+
+
              return `<div class="space-y-8">
-                     <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
-                         <div class="flex items-center justify-between mb-4"><h2 class="text-2xl font-extrabold text-gray-800">Calçadômetro de BH</h2><i class="fas fa-shoe-prints text-3xl text-[var(--pbh-blue-light)]"></i></div>
-                        <p class="text-gray-600 mb-4">Este é um indicador do progresso coletivo na regularização das calçadas, baseado na sua participação.</p>
-                        <div class="bg-gray-200 rounded-full h-8 w-full overflow-hidden"><div class="progress-bar-fill bg-gradient-to-r from-[var(--pbh-green)] to-[var(--pbh-blue-light)] h-full flex items-center justify-center text-white font-bold" style="width: ${progress}%">${Math.round(progress)}%</div></div>
-                        <p class="text-center text-sm mt-2 text-gray-500">Sua contribuição para a meta regional.</p>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                     <!-- CALÇADÔMETRO MOVIDO PARA CIMA -->
+                     ${calcadometroHtml}
+
+                     <!-- CARD DA BATALHA DAS REGIONAIS -->
+                     ${batalhaHtml}
+
+                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-2 bg-white rounded-xl app-shadow p-6 flex flex-col">
                             <h3 class="font-bold text-gray-800 mb-4 text-xl flex items-center"><i class="fas fa-crown text-yellow-500 mr-3"></i>Heróis do Mês</h3>
                             <div class="flex flex-col sm:flex-row justify-around items-center gap-4 flex-grow">
@@ -487,8 +596,9 @@
                      </div>
                 </div>`;
         }
+        // === FIM DASHBOARD ===
         
-        // --- NOVA PÁGINA: ESTRUTURA DE GOVERNO ---
+        // --- FUNÇÃO DE GOVERNO (inalterada) ---
         function getGovernoContent() {
             return `
             <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
@@ -522,15 +632,15 @@
                                     <img src="imagens/vic-foto.jpg" class="rounded-lg w-32 h-32 flex-shrink-0 app-shadow" alt="[Imagem de Victoria Camylle]">
                                     <div>
                                         <h3 class="text-xl font-bold text-gray-800">Victoria Camylle</h3>
-                                        <p class="font-semibold text-[var(--pbh-blue-light)]">Secretaria de Infraestrutura Urbana</p>
+                                        <p class="font-semibold text-[var(--pbh-blue-light)]">Secretária de Infraestrutura Urbana</p>
                                         <p class="mt-2 text-sm text-gray-700">Victoria lidera a frente de infraestrutura com foco em obras que melhoram a qualidade de vida, como saneamento, pavimentação e a manutenção do programa Calçada Cidadã.</p>
                                     </div>
                                 </div>
                                 <div class="flex items-start gap-4" data-filterable-item="true">
                                     <img src="imagens/julia-foto.jpg" class="rounded-lg w-32 h-32 flex-shrink-0 app-shadow" alt="[Imagem de Julia Coelho]">
                                     <div>
-                                        <h3 class="text-xl font-bold text-gray-800">Júlia Coelho</h3>
-                                        <p class="font-semibold text-[var(--pbh-blue-light)]">Secretaria de Transportes</p>
+                                        <h3 class="text-xl font-bold text-gray-800">Julia Coelho</h3>
+                                        <p class="font-semibold text-[var(--pbh-blue-light)]">Secretária de Transportes</p>
                                         <p class="mt-2 text-sm text-gray-700">Responsável por otimizar o trânsito e melhorar a qualidade do transporte público, garantindo que o cidadão possa se deslocar com mais rapidez e segurança.</p>
                                     </div>
                                 </div>
@@ -538,7 +648,7 @@
                                     <img src="imagens/isabel-foto.jpg" class="rounded-lg w-32 h-32 flex-shrink-0 app-shadow" alt="[Imagem de Isabel Rodrigues]">
                                     <div>
                                         <h3 class="text-xl font-bold text-gray-800">Isabel Rodrigues</h3>
-                                        <p class="font-semibold text-[var(--pbh-blue-light)]">Secretaria de Turismo</p>
+                                        <p class="font-semibold text-[var(--pbh-blue-light)]">Secretária de Turismo</p>
                                         <p class="mt-2 text-sm text-gray-700">Focada em promover os atrativos culturais e gastronômicos de Belo Horizonte, buscando atrair novos visitantes e fortalecer a economia local através do turismo.</p>
                                     </div>
                                 </div>
@@ -563,10 +673,528 @@
             `;
         }
 
-        function getStatusContent() {
-            return `<div class="p-4 sm:p-0"><h2 class="text-3xl font-extrabold text-gray-800 mb-6 text-[var(--pbh-blue-dark)]">Acompanhamento de Denúncias</h2><div id="denuncias-list" class="space-y-6"></div></div>`;
+        // --- NOVAS FUNÇÕES ADICIONADAS ---
+
+        function getAlertaRiscoContent() {
+            // ... (Função inalterada) ...
+            return `
+            <div class="space-y-8">
+                <div class="bg-red-700 text-white rounded-xl app-shadow p-6 lg:p-8 flex items-center gap-6">
+                    <i class="fas fa-exclamation-triangle text-6xl opacity-80"></i>
+                    <div>
+                        <h2 class="text-3xl font-extrabold">Alerta de Risco Climático Cidadão</h2>
+                        <p class="mt-2 text-red-100">Integração direta com a Defesa Civil (199). Sua ação preventiva pode salvar vidas.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Missões Preventivas Ativas</h3>
+                    <p class="text-gray-600 mb-6">Durante alertas de chuva forte, missões geolocalizadas aparecerão aqui. (Exemplos simulados)</p>
+                    
+                    <div class="space-y-4">
+                        <div data-filterable-item="true" class="bg-yellow-50 border-l-4 border-yellow-500 p-5 rounded-r-lg">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-yellow-800">Verificação de Bueiro (Rua Aimorés)</h4>
+                                <span class="text-sm font-semibold text-yellow-700">Prioridade: ALTA</span>
+                            </div>
+                            <p class="text-sm text-yellow-700 mt-2">Atenção: sua rua tem histórico de alagamento. Verifique se o bueiro mais próximo está livre e nos envie uma foto.</p>
+                            <button class="mt-4 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
+                                <i class="fas fa-camera mr-2"></i> Enviar Foto
+                            </button>
+                        </div>
+
+                        <div data-filterable-item="true" class="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg">
+                             <h4 class="font-bold text-blue-800">Reporte de Árvore (Parque Municipal)</h4>
+                             <span class="text-sm font-semibold text-blue-700">Prioridade: MÉDIA</span>
+                            <p class="text-sm text-blue-700 mt-2">Reporte árvores com galhos grandes que pareçam ter risco de queda na região do Parque Municipal.</p>
+                             <button class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
+                                <i class="fas fa-map-marker-alt mr-2"></i> Reportar Localização
+                            </button>
+                        </div>
+
+                        <div data-filterable-item="true" class="bg-gray-100 border-l-4 border-gray-400 p-5 rounded-r-lg opacity-80">
+                             <h4 class="font-bold text-gray-700">Nenhuma missão ativa no momento</h4>
+                            <p class="text-sm text-gray-600 mt-2">Você será notificado quando novos alertas forem emitidos para sua região.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function getLabIdeiasContent() {
+            // ... (Função inalterada) ...
+            return `
+            <div class="space-y-8">
+                <div class="bg-gradient-to-r from-purple-600 to-indigo-700 text-white rounded-xl app-shadow p-6 lg:p-8">
+                    <div class="flex items-center gap-6">
+                        <i class="fas fa-brain text-6xl opacity-80"></i>
+                        <div>
+                            <h2 class="text-3xl font-extrabold">Laboratório de Ideias Cívicas</h2>
+                            <p class="mt-2 text-indigo-100">Uma plataforma estruturada para a co-criação de soluções para problemas complexos da cidade.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Desafios de Inovação Abertos</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Desafio 1 -->
+                        <div data-filterable-item="true" class="border border-gray-200 rounded-lg overflow-hidden">
+                            <div class="p-5">
+                                <span class="text-xs font-bold uppercase text-green-600">Categoria: Meio Ambiente</span>
+                                <h4 class="text-xl font-bold text-gray-900 mt-1">Como podemos diminuir o desperdício de alimentos na cidade?</h4>
+                                <p class="text-gray-600 text-sm mt-2">Buscamos ideias inovadoras para conectar produtores, restaurantes e cidadãos para reduzir o desperdício de alimentos em BH.</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                                <div class="flex items-center space-x-6">
+                                    <div class="text-center"><span class="font-bold text-2xl text-indigo-600">128</span><p class="text-xs text-gray-500">Ideias</p></div>
+                                    <div class="text-center"><span class="font-bold text-2xl text-indigo-600">45</span><p class="text-xs text-gray-500">Squads</p></div>
+                                </div>
+                                <button class="w-full sm:w-auto button-primary-bg text-white font-semibold py-2 px-5 rounded-lg transition">
+                                    Participar do Desafio <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Desafio 2 -->
+                        <div data-filterable-item="true" class="border border-gray-200 rounded-lg overflow-hidden">
+                            <div class="p-5">
+                                <span class="text-xs font-bold uppercase text-blue-600">Categoria: Mobilidade</span>
+                                <h4 class="text-xl font-bold text-gray-900 mt-1">Como tornar o transporte público mais atraente para jovens?</h4>
+                                <p class="text-gray-600 text-sm mt-2">Ideias para gamificar a experiência, melhorar a informação em tempo real ou criar benefícios para estudantes que usam o transporte público.</p>
+                            </div>
+                             <div class="bg-gray-50 p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                                <div class="flex items-center space-x-6">
+                                    <div class="text-center"><span class="font-bold text-2xl text-indigo-600">74</span><p class="text-xs text-gray-500">Ideias</p></div>
+                                    <div class="text-center"><span class="font-bold text-2xl text-indigo-600">22</span><p class="text-xs text-gray-500">Squads</p></div>
+                                </div>
+                                <button class="w-full sm:w-auto button-primary-bg text-white font-semibold py-2 px-5 rounded-lg transition">
+                                    Participar do Desafio <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Desafio Encerrado -->
+                        <div data-filterable-item="true" class="border border-gray-200 rounded-lg overflow-hidden opacity-70">
+                            <div class="p-5">
+                                <span class="text-xs font-bold uppercase text-gray-500">Categoria: Cultura (Encerrado)</span>
+                                <h4 class="text-xl font-bold text-gray-600 mt-1">Revitalização dos parques públicos</h4>
+                                <p class="text-gray-500 text-sm mt-2">Ideias estão em análise pelo comitê da prefeitura.</p>
+                            </div>
+                            <div class="bg-gray-100 p-4 flex justify-between items-center">
+                                <span class="font-semibold text-gray-700">Propostas Finalistas Anunciadas</span>
+                                <button class="bg-gray-400 text-white font-semibold py-2 px-5 rounded-lg cursor-not-allowed">
+                                    Ver Resultados
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function getCacaTesourosContent() {
+            // ... (Função inalterada) ...
+            return `
+            <div class="space-y-8">
+                <div class="bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-xl app-shadow p-6 lg:p-8">
+                    <div class="flex items-center gap-6">
+                        <i class="fas fa-map-signs text-6xl opacity-80"></i>
+                        <div>
+                            <h2 class="text-3xl font-extrabold">Caça aos Tesouros Ocultos de BH</h2>
+                            <p class="mt-2 text-orange-100">Jornadas e enigmas que incentivam a descoberta de locais não óbvios da cidade.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Jornadas Disponíveis</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Jornada 1 -->
+                        <div data-filterable-item="true" class="bg-white rounded-xl app-shadow overflow-hidden flex flex-col transition-transform duration-300 hover:-translate-y-1">
+                            <img src="https://placehold.co/600x400/818cf8/ffffff?text=Arte+Urbana" alt="[Imagem de Arte urbana na Rua Sapucaí]" class="w-full h-48 object-cover">
+                            <div class="p-5 flex flex-col flex-grow">
+                                <span class="text-xs font-bold uppercase text-indigo-600 mb-1">Jornada</span>
+                                <h4 class="font-bold text-lg text-gray-900">Os mistérios da arte urbana da Rua Sapucaí</h4>
+                                <p class="text-gray-600 text-sm mt-2 flex-grow">Decifre enigmas baseados nos murais e descubra a história por trás do maior mirante de arte urbana da América Latina.</p>
+                                <div class="mt-4">
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                                        <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 40%"></div>
+                                    </div>
+                                    <span class="text-xs font-semibold text-gray-500">2 de 5 etapas concluídas</span>
+                                </div>
+                                <button class="mt-4 w-full button-primary-bg text-white font-semibold py-2 px-4 rounded-lg text-center text-sm transition">Continuar Jornada</button>
+                            </div>
+                        </div>
+
+                        <!-- Jornada 2 -->
+                        <div data-filterable-item="true" class="bg-white rounded-xl app-shadow overflow-hidden flex flex-col transition-transform duration-300 hover:-translate-y-1">
+                            <img src="https://placehold.co/600x400/34d399/ffffff?text=Parque" alt="[Imagem do Parque Municipal]" class="w-full h-48 object-cover">
+                            <div class="p-5 flex flex-col flex-grow">
+                                <span class="text-xs font-bold uppercase text-green-600 mb-1">Jornada</span>
+                                <h4 class="font-bold text-lg text-gray-900">As lendas do Parque Municipal</h4>
+                                <p class="text-gray-600 text-sm mt-2 flex-grow">Siga as pistas escondidas nas estátuas e fontes do parque para revelar um fragmento da história da fundação de BH.</p>
+                                <div class="mt-4">
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                                        <div class="bg-green-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                    </div>
+                                    <span class="text-xs font-semibold text-gray-500">0 de 7 etapas concluídas</span>
+                                </div>
+                                <button class="mt-4 w-full accent-yellow-bg text-gray-900 font-semibold py-2 px-4 rounded-lg text-center text-sm transition">Iniciar Jornada</button>
+                            </div>
+                        </div>
+
+                        <!-- Jornada Concluída -->
+                        <div data-filterable-item="true" class="bg-white rounded-xl app-shadow overflow-hidden flex flex-col opacity-70">
+                            <img src="https://placehold.co/600x400/f87171/ffffff?text=Mercado" alt="[Imagem do Mercado Central]" class="w-full h-48 object-cover">
+                            <div class="p-5 flex flex-col flex-grow">
+                                <span class="text-xs font-bold uppercase text-red-600 mb-1">Jornada Concluída</span>
+                                <h4 class="font-bold text-lg text-gray-700">Sabores do Mercado Central</h4>
+                                <p class="text-gray-500 text-sm mt-2 flex-grow">Você descobriu os segredos culinários e ganhou o emblema 'Explorador de BH'!</p>
+                                <div class="mt-4">
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                                        <div class="bg-red-500 h-2.5 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                    <span class="text-xs font-semibold text-red-700 flex items-center"><i class="fas fa-check-circle mr-1"></i> Concluída</span>
+                                </div>
+                                <button class="mt-4 w-full bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg text-center text-sm cursor-not-allowed">Rejogar</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function getEmbaixadaEmpresarialContent() {
+            // ... (Função inalterada) ...
+            return `
+            <div class="space-y-8">
+                <div class="bg-gradient-to-r from-blue-800 to-blue-900 text-white rounded-xl app-shadow p-6 lg:p-8">
+                    <div class="flex items-center gap-6">
+                        <i class="fas fa-briefcase text-6xl opacity-80"></i>
+                        <div>
+                            <h2 class="text-3xl font-extrabold">Embaixada Empresarial B2B</h2>
+                            <p class="mt-2 text-blue-100">Uma plataforma para empresas locais gerenciarem e gamificarem suas ações de responsabilidade social.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-8">
+                        <!-- Ranking Corporativo -->
+                        <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Ranking Corporativo (Temporada Atual)</h3>
+                            <div class="space-y-4">
+                                <div data-filterable-item="true" class="flex items-center p-4 bg-yellow-50 rounded-lg border border-yellow-300">
+                                    <div class="text-3xl font-bold w-12 text-center text-yellow-600">#1</div>
+                                    <div class="text-3xl mx-4 text-yellow-500"><i class="fas fa-building"></i></div>
+                                    <div class="flex-grow"><p class="font-bold text-lg text-gray-800">Construtora ABC</p><p class="text-sm text-gray-500">2.500 Pontos Cívicos</p></div>
+                                    <span class="text-yellow-600 font-bold">Patrocinadora Ouro</span>
+                                </div>
+                                <div data-filterable-item="true" class="flex items-center p-4 bg-gray-100 rounded-lg border border-gray-300">
+                                    <div class="text-2xl font-bold w-12 text-center text-gray-600">#2</div>
+                                    <div class="text-3xl mx-4 text-gray-500"><i class="fas fa-coffee"></i></div>
+                                    <div class="flex-grow"><p class="font-bold text-lg text-gray-800">Café Cultura</p><p class="text-sm text-gray-500">1.800 Pontos Cívicos</p></div>
+                                </div>
+                                 <div data-filterable-item="true" class="flex items-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                                    <div class="text-xl font-bold w-12 text-center text-orange-700">#3</div>
+                                    <div class="text-3xl mx-4 text-orange-500"><i class="fas fa-shopping-cart"></i></div>
+                                    <div class="flex-grow"><p class="font-bold text-lg text-gray-800">Rede de Supermercados BH</p><p class="text-sm text-gray-500">1.500 Pontos Cívicos</p></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Patrocine uma Temporada -->
+                        <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Patrocine uma Temporada Temática</h3>
+                            <p class="text-gray-600 mb-4">Associe sua marca a uma causa e impulsione o engajamento cívico. (Ex: "Temporada da Reciclagem, patrocinada pela Empresa X")</F>
+                            <button class="button-primary-bg text-white font-semibold py-3 px-6 rounded-lg transition">
+                                Ver Oportunidades de Patrocínio
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Painel da Empresa (Simulado) -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="bg-white rounded-xl app-shadow p-6 sticky top-8">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Painel da "Construtora ABC"</h3>
+                            <p class="text-gray-600 text-sm mb-4">Gerencie seus desafios internos e veja seu impacto.</p>
+                            
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-gray-700">Desafio Interno Ativo:</h4>
+                                <div class="mt-2 bg-blue-50 p-3 rounded-lg border border-blue-200">
+                                    <p class="font-bold text-blue-800">Mês da Voluntariado</p>
+                                    <p class="text-sm text-blue-700">"A equipe que arrecadar mais BH-Coins este mês ganha um prêmio!"</p>
+                                </div>
+                            </div>
+
+                            <button class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
+                                <i class="fas fa-plus mr-2"></i> Criar Novo Desafio Interno
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // --- FUNÇÕES DAS NOVAS FUNCIONALIDADES ---
+
+        function getMatchCivicoContent() {
+            // ... (Função inalterada) ...
+            const pedidosAjuda = [
+                { id: 'm1', tipo: 'ONG', titulo: "Pintar o muro da Escola Municipal A", bairro: "Centro-Sul", voluntarios: 3, icon: 'fa-school' },
+                { id: 'm2', tipo: 'Cidadão', titulo: "Ajuda para idoso levar o lixo", bairro: "Leste", voluntarios: 1, icon: 'fa-trash-alt' },
+                { id: 'm3', tipo: 'Coletivo', titulo: "Limpeza da Praça da Pampulha", bairro: "Pampulha", voluntarios: 10, icon: 'fa-broom' },
+                { id: 'm4', tipo: 'ONG', titulo: "Doação de sangue - Hemominas", bairro: "Centro-Sul", voluntarios: 20, icon: 'fa-tint' },
+            ];
+
+            return `
+            <div class="space-y-8">
+                <div class="bg-gradient-to-r from-teal-500 to-cyan-600 text-white rounded-xl app-shadow p-6 lg:p-8">
+                    <div class="flex items-center gap-6">
+                        <i class="fas fa-hands-helping text-6xl opacity-80"></i>
+                        <div>
+                            <h2 class="text-3xl font-extrabold">Match Cívico</h2>
+                            <p class="mt-2 text-cyan-100">Conectando voluntários ("Mão na Massa") a necessidades da comunidade.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <h3 class="text-2xl font-bold text-gray-800">Pedidos de Ajuda Ativos</h3>
+                        ${pedidosAjuda.map(p => `
+                            <div data-filterable-item="true" class="bg-white rounded-xl app-shadow overflow-hidden">
+                                <div class="p-5 flex items-center gap-5">
+                                    <div class="flex-shrink-0 w-16 h-16 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center text-3xl">
+                                        <i class="fas ${p.icon}"></i>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <span class="text-xs font-bold uppercase text-teal-600">${p.tipo} - ${p.bairro}</span>
+                                        <h4 class="text-lg font-bold text-gray-900">${p.titulo}</h4>
+                                        <p class="text-sm text-gray-600">Precisa-se de ${p.voluntarios} voluntário(s).</p>
+                                    </div>
+                                    <button class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-5 rounded-lg transition flex-shrink-0">
+                                        <i class="fas fa-check mr-2"></i> Dar Match
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="bg-white rounded-xl app-shadow p-6 sticky top-8">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Postar um Pedido</h3>
+                            <p class="text-sm text-gray-600 mb-4">Você é uma ONG ou precisa de ajuda comunitária? (Requer validação)</p>
+                            <form onsubmit="event.preventDefault(); showModal('Pedido Enviado!', 'Seu pedido de ajuda foi enviado para análise e em breve estará visível para os voluntários.');" class="space-y-3">
+                                <div><label class="block text-sm font-medium">Título</label><input type="text" required class="w-full border-gray-300 rounded-lg p-2 mt-1"></div>
+                                <div><label class="block text-sm font-medium">Descrição</label><textarea rows="3" required class="w-full border-gray-300 rounded-lg p-2 mt-1"></textarea></div>
+                                <div><label class="block text-sm font-medium">Nº de Voluntários</label><input type="number" value="1" required class="w-full border-gray-300 rounded-lg p-2 mt-1"></div>
+                                <button type="submit" class="w-full button-primary-bg text-white font-semibold py-2 rounded-lg transition">Publicar Pedido</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function getGuardioesContent() {
+            // ... (Função inalterada) ...
+            const patrimonios = [
+                { id: 'p1', nome: "Monumento a Tiradentes", bairro: "Centro-Sul", status: "Adotado por Você", icon: 'fa-monument' },
+                { id: 'p2', nome: "Fachada do Palácio das Artes", bairro: "Centro-Sul", status: "Disponível", icon: 'fa-theater-masks' },
+                { id: 'p3', nome: "Estátua de Iemanjá", bairro: "Pampulha", status: "Disponível", icon: 'fa-female' },
+                { id: 'p4', nome: "Coreto da Praça da Savassi", bairro: "Centro-Sul", status: "Adotado por Cidadão-a4e8", icon: 'fa-music' },
+            ];
+
+            return `
+            <div class="space-y-8">
+                <div class="bg-gradient-to-r from-amber-600 to-yellow-700 text-white rounded-xl app-shadow p-6 lg:p-8">
+                    <div class="flex items-center gap-6">
+                        <i class="fas fa-landmark text-6xl opacity-80"></i>
+                        <div>
+                            <h2 class="text-3xl font-extrabold">Guardiões de Patrimônio Histórico</h2>
+                            <p class="mt-2 text-yellow-100">Adote um monumento e ajude a preservar a memória da cidade.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Patrimônios para Adoção</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${patrimonios.map(p => `
+                            <div data-filterable-item="true" class="bg-white rounded-xl app-shadow border flex flex-col overflow-hidden ${p.status === 'Adotado por Você' ? 'border-green-500' : ''}">
+                                <div class="p-5 flex-grow">
+                                    <div class="flex justify-between items-start">
+                                        <i class="fas ${p.icon} text-4xl text-amber-700 mb-4"></i>
+                                        ${p.status === 'Adotado por Você' ? '<span class="text-xs font-bold bg-green-100 text-green-700 px-2 py-1 rounded-full">SEU</span>' : ''}
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900">${p.nome}</h4>
+                                    <p class="text-sm text-gray-600 mb-2">${p.bairro}</p>
+                                </div>
+                                <div class="bg-gray-50 p-4">
+                                ${p.status === 'Disponível' ? `
+                                    <button class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
+                                        <i class="fas fa-shield-alt mr-2"></i> Quero Adotar
+                                    </button>
+                                ` : `
+                                    ${p.status === 'Adotado por Você' ? `
+                                        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
+                                            <i class="fas fa-exclamation-circle mr-2"></i> Reportar Dano
+                                        </button>
+                                    ` : `
+                                        <button class="w-full bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg text-sm cursor-not-allowed" disabled>
+                                            ${p.status}
+                                        </button>
+                                    `}
+                                `}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+            `;
         }
         
+        function getComercioLocalContent() {
+            // ... (Função inalterada) ...
+             const desafiosComercio = [
+                { id: 'c1', titulo: "Visite 3 padarias no seu bairro", recompensa: 50, progresso: 1, total: 3, icon: 'fa-bread-slice' },
+                { id: 'c2', titulo: "Compre de um artesão local", recompensa: 30, progresso: 0, total: 1, icon: 'fa-paint-brush' },
+                { id: 'c3', titulo: "Avalie 2 restaurantes de bairro", recompensa: 25, progresso: 2, total: 2, icon: 'fa-utensils', concluido: true },
+            ];
+
+             return `
+            <div class="space-y-8">
+                <div class="bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-xl app-shadow p-6 lg:p-8">
+                    <div class="flex items-center gap-6">
+                        <i class="fas fa-store text-6xl opacity-80"></i>
+                        <div>
+                            <h2 class="text-3xl font-extrabold">Desafio do Comércio Local</h2>
+                            <p class="mt-2 text-emerald-100">Fomente a economia do seu bairro e ganhe BH-Coins.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <h3 class="text-2xl font-bold text-gray-800">Desafios Ativos</h3>
+                        ${desafiosComercio.map(d => {
+                            const percent = (d.progresso / d.total) * 100;
+                            return `
+                            <div data-filterable-item="true" class="bg-white rounded-xl app-shadow p-5 ${d.concluido ? 'opacity-70' : ''}">
+                                <div class="flex items-center gap-5">
+                                    <div class="flex-shrink-0 w-16 h-16 rounded-lg ${d.concluido ? 'bg-gray-100 text-gray-500' : 'bg-green-100 text-green-600'} flex items-center justify-center text-3xl">
+                                        <i class="fas ${d.icon}"></i>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h4 class="text-lg font-bold ${d.concluido ? 'text-gray-600' : 'text-gray-900'}">${d.titulo}</h4>
+                                        <p class="text-sm text-gray-600">Recompensa: +${d.recompensa} BH-Coins</p>
+                                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                                            <div class="${d.concluido ? 'bg-gray-400' : 'bg-green-600'} h-2.5 rounded-full" style="width: ${percent}%"></div>
+                                        </div>
+                                        <span class="text-xs font-semibold text-gray-500">${d.progresso} de ${d.total} concluído(s)</span>
+                                    </div>
+                                    ${d.concluido ? `
+                                        <span class="font-bold text-green-600 flex items-center"><i class="fas fa-check-circle mr-2"></i>Concluído</span>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            `
+                        }).join('')}
+                    </div>
+
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="bg-white rounded-xl app-shadow p-6 sticky top-8">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Validar Visita (Comerciante)</h3>
+                            <p class="text-sm text-gray-600 mb-4">É comerciante? Escaneie o QR Code do cidadão para validar a visita e liberar a recompensa.</p>
+                            <button class="w-full button-primary-bg text-white font-semibold py-3 px-4 rounded-lg transition">
+                                <i class="fas fa-qrcode mr-2"></i> Abrir Leitor de QR Code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+        
+        function getEleicaoLideresContent() {
+            // ... (Função inalterada) ...
+             const candidatos = [
+                { id: 'c1', nome: 'Cidadão-a4e8 (Ana)', regional: 'Centro-Sul', plataforma: "Foco total na acessibilidade das calçadas da Savassi e limpeza das praças.", votos: 1250, avatar: "https://placehold.co/80x80/fecaca/991b1b?text=A" },
+                { id: 'c2', nome: 'Cidadão-b8e1 (Beto)', regional: 'Centro-Sul', plataforma: "Mais mutirões de plantio de árvores e melhor iluminação nas ruas residenciais.", votos: 980, avatar: "https://placehold.co/80x80/dbeafe/1e40af?text=B" },
+                { id: 'c3', nome: 'Cidadã-c9f2 (Carla)', regional: 'Pampulha', plataforma: "Guardiões para a orla da lagoa e fiscalização de pichações.", votos: 1500, avatar: "https://placehold.co/80x80/fef9c3/854d0e?text=C" },
+            ];
+
+            return `
+            <div class="space-y-8">
+                <div class="bg-gradient-to-r from-indigo-700 to-purple-800 text-white rounded-xl app-shadow p-6 lg:p-8">
+                    <div class="flex items-center gap-6">
+                        <i class="fas fa-user-check text-6xl opacity-80"></i>
+                        <div>
+                            <h2 class="text-3xl font-extrabold">Eleição de Líderes Comunitários</h2>
+                            <p class="mt-2 text-purple-100">Use suas BH-Coins para votar nos líderes cívicos da sua regional (1 moeda = 1 voto).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Candidatos da sua Regional (Centro-Sul)</h3>
+                    <div class="space-y-6">
+                        ${candidatos.filter(c => c.regional === 'Centro-Sul').map(c => `
+                            <div data-filterable-item="true" class="bg-white rounded-xl app-shadow border p-5">
+                                <div class="flex flex-col sm:flex-row items-start gap-5">
+                                    <img src="${c.avatar}" class="rounded-full w-20 h-20 flex-shrink-0" alt="[Imagem do avatar de ${c.nome}]">
+                                    <div class="flex-grow">
+                                        <h4 class="text-xl font-bold text-gray-900">${c.nome}</h4>
+                                        <p class="text-sm text-gray-700 italic mt-2 mb-3">"${c.plataforma}"</p>
+                                        <div class="flex items-center gap-3">
+                                            <input type="number" placeholder="10" class="w-24 border-gray-300 rounded-lg p-2 text-sm" title="Número de BH-Coins para votar">
+                                            <button class="flex-1 sm:flex-none button-primary-bg text-white font-semibold py-2 px-4 rounded-lg transition">
+                                                <i class="fas fa-vote-yea mr-2"></i> Votar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="flex-shrink-0 text-right">
+                                        <p class="text-2xl font-bold text-indigo-700">${c.votos}</p>
+                                        <p class="text-sm text-gray-500">votos</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="mt-8 pt-8 border-t">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Resultados (Outras Regionais)</h3>
+                        <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                            <img src="${candidatos[2].avatar}" class="rounded-full w-12 h-12 mr-4" alt="[Imagem do avatar de ${candidatos[2].nome}]">
+                            <div class="flex-grow">
+                                <p class="font-bold text-lg text-gray-800">${candidatos[2].nome}</p>
+                                <p class="text-sm text-gray-500">Eleita <span class="font-semibold text-purple-700">Líder da Pampulha</span> com ${candidatos[2].votos} votos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
+        function getStatusContent() {
+            return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-10"><h2 class="text-3xl font-extrabold text-gray-800 mb-6 text-[var(--pbh-blue-dark)]">Acompanhamento de Denúncias</h2><div id="denuncias-list" class="space-y-6"></div></div>`;
+        }
+        
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getMultiroesContent() { 
             return `<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="lg:col-span-2 space-y-6">
@@ -597,6 +1225,7 @@
                 </div>`; 
         }
 
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getClubesContent() {
             let rankingHtml = civicClubs.sort((a,b) => b.points - a.points).map(c => `
                 <div data-filterable-item="true" class="flex items-center p-4 bg-gray-50 rounded-lg">
@@ -621,6 +1250,7 @@
                     </div>`;
         }
         
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getClubeDetalheContent(params) {
             const clube = civicClubs.find(c => c.id === params.clubId);
             if (!clube) return `<h2>Clube não encontrado</h2>`;
@@ -657,6 +1287,7 @@
             `;
         }
         
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getMissoesContent() {
              return `<div class="space-y-8">
                         <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
@@ -674,6 +1305,7 @@
                     </div>`;
         }
 
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getProgressoContent() {
             const regionsHtml = bhRegions.map(region => {
                 const unlocked = userProfile.unlockedRegions.includes(region.id);
@@ -692,6 +1324,7 @@
             return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8"><h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-2">Mapa da Cidade</h2><p class="text-gray-600 mb-6">Desbloqueie regiões e complete missões de monumento para ganhar emblemas exclusivos.</p><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">${regionsHtml}</div></div>`;
         }
         
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getTemporadasContent() {
             return `<div class="space-y-8">
                 <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)]">Temporadas Temáticas</h2>
@@ -715,6 +1348,7 @@
             </div>`;
         }
 
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getSeasonPassContent() {
             const progressPercentage = (seasonPassData.xp / 100) * 100; // Simula XP para chegar ao level 5
             return `
@@ -745,6 +1379,7 @@
             `;
         }
 
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getRecompensasContent() {
              return `<div class="space-y-8">
                      <div class="bg-gradient-to-r from-purple-600 to-indigo-700 text-white rounded-xl app-shadow p-6 lg:p-8">
@@ -790,6 +1425,7 @@
             `;
         }
 
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getEducacaoContent() {
             return `<div class="space-y-8">
                     <div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
@@ -811,6 +1447,7 @@
                  </div>`;
         }
         
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getQuizContent() {
             if (currentQuizQuestion >= quizCidadao.length) {
                 return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8 text-center">
@@ -829,11 +1466,14 @@
                     </div>`;
         }
         
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getFormContent() {
              return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-10"><h2 class="text-3xl font-extrabold text-gray-800 mb-4 text-[var(--pbh-blue-dark)]">Registrar Nova Denúncia</h2><form onsubmit="event.preventDefault(); showModal('Denúncia Enviada!', 'Obrigado por sua contribuição!');" class="space-y-6"><div><label class="block text-sm font-medium">Endereço</label><input type="text" required class="w-full border-gray-300 rounded-lg p-3"></div><div><label class="block text-sm font-medium">Foto</label><input type="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"></div><div><label class="block text-sm font-medium">Detalhes</label><textarea rows="4" required class="w-full border-gray-300 rounded-lg p-3"></textarea></div><div class="pt-4"><button type="submit" class="w-full flex justify-center items-center py-3 px-4 rounded-lg shadow-lg text-lg font-bold text-white button-primary-bg"><i class="fas fa-paper-plane mr-2"></i> Registrar Denúncia</button></div></form></div>`;
         }
         
         // --- FUNÇÕES RESTAURADAS E ATUALIZADAS ---
+        
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getProporAcaoContent() {
             let propostasHtml = currentPropostas.map(p => `
                 <div data-filterable-item="true" class="bg-white p-4 rounded-lg app-shadow flex items-center space-x-4">
@@ -864,6 +1504,7 @@
                 </div>
             `;
         }
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getOrcamentoContent() {
             return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
                         <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-4">Orçamento Participativo</h2>
@@ -885,6 +1526,7 @@
                         </div>
                     </div>`;
         }
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getEmpresasContent() {
              return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-10">
                         <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-6">Empresas Parceiras</h2>
@@ -904,6 +1546,7 @@
                         </div>
                     </div>`;
         }
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getDashboardPublicoContent() {
              const heatmapCells = Array.from({length: 50}, (_, i) => {
                 const intensity = Math.random();
@@ -937,6 +1580,7 @@
                     </div>
                  </div>`;
         }
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getLegislacaoContent() {
              return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-10">
                         <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-6">Legislação e a Cidade</h2>
@@ -957,6 +1601,7 @@
                         </div>
                     </div>`;
         }
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getOuvidoriaContent() {
             return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-10">
                         <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-6">Ouvidoria e Canais de Atendimento</h2>
@@ -970,6 +1615,7 @@
                         </div>
                     </div>`;
         }
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getAdocaoContent() {
             return `<div class="bg-white rounded-xl app-shadow p-6 lg:p-8">
                     <h2 class="text-3xl font-extrabold text-[var(--pbh-blue-dark)] mb-2">Adote uma Calçada</h2>
@@ -994,6 +1640,7 @@
                     </div>
                 </div>`;
         }
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getRankingContent() {
             const rankingBairros = [
                 { nome: 'Savassi', resolvidas: 125, icon: 'fa-glass-cheers' },
@@ -1006,6 +1653,8 @@
                 <div class="space-y-4">${rankingHtml}</div>
                 </div>`;
         }
+
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         window.submitNovaProposta = function() {
             const form = document.getElementById('proposta-form');
             const title = form['prop-titulo'].value.trim();
@@ -1016,7 +1665,7 @@
             showModal("Sucesso!", "Sua proposta foi adicionada à lista!");
         }
 
-        // --- Funções Auxiliares ---
+        // --- Funções Auxiliares (inalteradas) ---
         function renderDenuncias() {
             const listElement = document.getElementById('denuncias-list');
             if (!listElement) return;
@@ -1045,6 +1694,7 @@
         }
 
         function renderEnquete() {
+            // ... (Função inalterada) ...
             const container = document.getElementById('enquete-container');
             if (!container) return;
             const totalVotes = enqueteData.options.reduce((sum, opt) => sum + opt.votes, 0);
@@ -1058,10 +1708,12 @@
             container.innerHTML = `<p class="text-sm font-semibold mb-2">${enqueteData.question}</p>${optionsHtml}`;
         }
         window.votarEnquete = function(index) {
+            // ... (Função inalterada) ...
             enqueteData.options[index].votes++;
             renderEnquete();
         }
         window.gerarConvite = function() {
+            // ... (Função inalterada) ...
             const local = document.getElementById('convite-local').value || "nosso bairro";
             const data = document.getElementById('convite-data').value || "em breve";
             const texto = `📢 *CONVITE PARA MUTIRÃO CÍVICO* 📢\n\nVamos juntos melhorar ${local}!\n\n🗓️ *Quando:* ${data}\n📍 *Onde:* Ponto de encontro a definir\n\nVamos mostrar a força da nossa comunidade! Conto com você! 💪\n\n(Organizado via Portal Cívico de BH)`;
@@ -1070,6 +1722,7 @@
                 .catch(() => showModal("Erro", "Não foi possível copiar o texto."));
         }
         window.fazerDoacao = function(cost) {
+            // ... (Função inalterada) ...
             if (userProfile.bhCoin >= cost) {
                 userProfile.bhCoin -= cost;
                 updateUI();
@@ -1079,6 +1732,7 @@
             }
         }
         window.checkAnswer = function(selectedIndex, correctIndex) {
+            // ... (Função inalterada) ...
             if (selectedIndex === correctIndex) {
                 quizScore++;
                 showModal("Resposta Correta!", "Você ganhou +10 BH-Coins!");
@@ -1091,15 +1745,18 @@
             changeScreen('quiz', {}, false);
         }
         window.resetQuiz = function() {
+            // ... (Função inalterada) ...
             currentQuizQuestion = 0;
             quizScore = 0;
             changeScreen('educacao');
         }
         function updateUI() {
+            // ... (Função inalterada) ...
             document.getElementById('user-id').textContent = (window.userId || '...').substring(0, 8);
             document.getElementById('bh-coin-balance').textContent = userProfile.bhCoin;
         }
         window.toggleSidebar = function(forceClose = false) {
+            // ... (Função inalterada) ...
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
             const isHidden = sidebar.classList.contains('-translate-x-full');
@@ -1114,6 +1771,7 @@
             }
         }
         window.showModal = function(title, message) {
+            // ... (Função inalterada) ...
             document.getElementById('modal-title').textContent = title;
             document.getElementById('modal-body').innerHTML = message;
             document.getElementById('custom-modal').classList.remove('hidden');
@@ -1121,9 +1779,11 @@
         }
         window.hideModal = function() { document.getElementById('custom-modal').classList.add('hidden'); }
         window.showBelobotTip = function() {
+            // ... (Função inalterada) ...
             const tips = ["Participe do Quiz do Cidadão na aba 'Educação Cívica' para ganhar BH-Coins fáceis!", "Fique de olho na Batalha de Clubes! A competição está acirrada.", "Doe suas BH-Coins para causas nobres e ganhe emblemas de 'Doador'.", "Confira o Passe de Temporada para ver as recompensas exclusivas que você pode desbloquear!"];
             showModal("Dica do BelôBot 🤖", tips[Math.floor(Math.random() * tips.length)]);
         }
+        // --- FUNÇÃO ORIGINAL (inalterada, apenas usada) ---
         function getConquistasContent() { 
             const levelInfo = levelTitles[userProfile.levelIndex];
             const badgesHtml = Object.keys(badgesData).map(key => { 
@@ -1156,9 +1816,79 @@
                     </div>
                 </div>`;
         }
+        
+        // --- NOVAS FUNÇÕES DE AGRUPAMENTO ---
+        
+        /**
+         * 2. Unifica "Nova Denúncia" e "Acompanhamento"
+         */
+        function getDenunciaEStatusContent() {
+            const formContent = getFormContent(); 
+            const statusContent = getStatusContent(); 
+            return `<div class="space-y-8">${formContent}${statusContent}</div>`;
+        }
+
+        /**
+         * 3. Unifica "Mutirões", "Clubes Cívicos", "Propostas da Comunidade" e "Match Cívico"
+         */
+        function getEngajamentoComunitarioContent() {
+            const matchCivicoContent = getMatchCivicoContent();
+            const multiroesContent = getMultiroesContent();
+            const clubesContent = getClubesContent();
+            const propostasContent = getProporAcaoContent();
+            // Adiciona um wrapper com espaçamento para cada seção
+            return `
+            <div class="space-y-12">
+                <div>${matchCivicoContent}</div>
+                <div>${multiroesContent}</div>
+                <div>${clubesContent}</div>
+                <div>${propostasContent}</div>
+            </div>
+            `;
+        }
+
+        /**
+         * 4. Unifica "Orçamento Participativo" e "Laboratório de Ideias"
+         */
+        function getIdeiasEOrcamentoContent() {
+            const labIdeiasContent = getLabIdeiasContent();
+            const orcamentoContent = getOrcamentoContent();
+            return `
+            <div class="space-y-12">
+                <div>${labIdeiasContent}</div>
+                <div>${orcamentoContent}</div>
+            </div>
+            `;
+        }
+
+        /**
+         * 5. Unifica "Temporadas Temáticas" e "Mapa da Cidade"
+         */
+        function getMapaETemporadasContent() {
+            const temporadasContent = getTemporadasContent();
+            const progressoContent = getProgressoContent(); // Mapa da Cidade
+            return `
+            <div class="space-y-12">
+                <div>${temporadasContent}</div>
+                <div>${progressoContent}</div>
+            </div>
+            `;
+        }
+
+        /**
+         * 6. Unifica "Empresas Parceiras" e "Embaixada Empresarial"
+         */
+        function getParceriasEmpresariaisContent() {
+            const embaixadaContent = getEmbaixadaEmpresarialContent();
+            const empresasContent = getEmpresasContent();
+            return `
+            <div class="space-y-12">
+                <div>${embaixadaContent}</div>
+                <div>${empresasContent}</div>
+            </div>
+            `;
+        }
+
     </script>
 </body>
 </html>
-
-
-
